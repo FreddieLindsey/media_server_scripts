@@ -6,8 +6,13 @@
 #--------------------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------------------#
 
-script=${basename $0}
-configfile="$HOME/Dropbox/Scripts/Home_Theatre/media_centre_config.conf"
+script=$0
+
+cd `dirname $script`
+script_directory=$(pwd -P)
+
+echo $script_directory
+configfile="$script_directory/media_centre_config.conf"
 configfile_secured='/tmp/config_ripdiscs.cfg'
 
 #--------------------------------------------------------------------------------------------------#
@@ -31,6 +36,8 @@ fi
 
 # check if the file contains something we don't want
 echo "Reading config file...
+
+N.B. Config file is not being checked currently, hence, BECAREFUL! - future releases may change this.
 " >&2
 
 source "$configfile"
@@ -119,6 +126,7 @@ makemkv_running
 
 name_from_mount
 
-disc_name_year=$(get_disc_info title "$disc_mount") #" "$(get_disc_info release_date "$disc_mount")
+disc_name_year="$(get_disc_info title "$disc_mount") $(get_disc_info release_date "$disc_mount")"
+echo $disc_name_year
 
 makemkv_rip "$disc_name_year"

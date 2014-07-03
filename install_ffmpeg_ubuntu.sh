@@ -47,3 +47,5 @@ make
 make install
 make distclean
 hash -r
+
+rm -rf ~/ffmpeg_*

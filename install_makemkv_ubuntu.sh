@@ -23,3 +23,10 @@ tar -xzvf $oss_zip
 rm index.html
 rm $bin_zip
 rm $oss_zip
+
+cd ~/$oss_folder
+./configure
+make
+make install
+
+rm -rf ~/$oss_folder

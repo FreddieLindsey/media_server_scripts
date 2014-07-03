@@ -34,4 +34,12 @@ sudo $script_directory/install_plex_ubuntu.sh | tee /dev/tty
 
 echo "
 Plex Media Server has been installed
+
+Now installing FFmpeg...
+" >&2
+
+sudo $script_directory/install_ffmpeg_ubuntu.sh | tee /dev/tty
+
+echo "
+FFmpeg has been installed
 " >&2

@@ -6,6 +6,10 @@ script_directory=$(pwd -P)
 
 cd $HOME
 
+sudo add-apt-repository ppa:stebbins/handbrake-releases
+
+sudo apt-get -y --fix-missing install pkg-config libc6-dev libssl-dev libexpat1-dev libavcodec-dev libgl1-mesa-dev libqt4-dev libgif4 openjdk-7-jre openjdk-7-jre-headless handbrake-cli avahi-daemon
+
 echo "
 Now installing MakeMKV...
 " >&2

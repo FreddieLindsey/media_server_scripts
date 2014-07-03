@@ -26,7 +26,7 @@ yes yes | make
 sudo make install
 
 cd ../$bin_folder
-yes yes | make
+yes yes | makemkvmake
 sudo make install
 
 cd ..

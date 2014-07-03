@@ -4,8 +4,6 @@ cd $HOME
 
 rm -rf makemkv-*
 
-sudo apt-get install checkinstall
-
 wget "http://www.makemkv.com/download/"
 export curr_version=$(grep -m 1 "MakeMKV v" index.html | sed -e "s/.*MakeMKV v//;s/ (.*//")
 
@@ -24,12 +22,12 @@ tar -xzvf $oss_zip
 
 cd $oss_folder
 ./configure
-make
-sudo checkinstall make install
+yes yes | make
+sudo make install
 
 cd ../$bin_folder
-make
-sudo checkinstall make install
+yes yes | make
+sudo make install
 
 cd ..
 

@@ -20,20 +20,6 @@ wget http://www.makemkv.com/download/$oss_zip
 tar -xzvf $bin_zip
 tar -xzvf $oss_zip
 
-cd $oss_folder
-./configure
-yes yes | make
-sudo make install
-
-cd ../$bin_folder
-yes yes | makemkvmake
-sudo make install
-
-cd ..
-
-echo removing downloaded files
 rm index.html
 rm $bin_zip
 rm $oss_zip
-rm -rf $oss_folder
-rm -rf $bin_folder

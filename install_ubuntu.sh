@@ -10,15 +10,15 @@ sudo add-apt-repository ppa:stebbins/handbrake-releases
 
 sudo apt-get -y --fix-missing install pkg-config libc6-dev libssl-dev libexpat1-dev libavcodec-dev libgl1-mesa-dev libqt4-dev libgif4 openjdk-7-jre openjdk-7-jre-headless handbrake-cli avahi-daemon
 
-echo "
-Now installing MakeMKV...
-" >&2
+# echo "
+# Now installing MakeMKV...
+# " >&2
 
 sudo $script_directory/install_makemkv_ubuntu.sh | tee /dev/tty
 
+# echo "
+# MakeMKV has been installed...
 echo "
-MakeMKV has been installed...
-
 Now installing Filebot...
 " >&2
 

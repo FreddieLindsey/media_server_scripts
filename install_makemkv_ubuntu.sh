@@ -11,12 +11,16 @@ tar -xvf makemkv-bin-1.8.11.tar.gz
 tar -xvf makemkv-oss-1.8.11.tar.gz
 
 cd ./makemkv-bin-1.8.11
-yes | make
+make
+expect "Please type \"yes\" if you accept the terms of the license"
+send "yes\n"
 sudo make install
 
 cd ../makemkv-oss-1.8.11
 ./configure
-yes | make
+make
+expect "Please type \"yes\" if you accept the terms of the license"
+send "yes\n"
 sudo make install
 
 cd ..

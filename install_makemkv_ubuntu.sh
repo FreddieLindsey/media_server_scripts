@@ -4,25 +4,38 @@ cd $HOME
 
 rm -rf makemkv-*
 
-wget http://www.makemkv.com/download/makemkv-bin-1.8.11.tar.gz
-wget http://www.makemkv.com/download/makemkv-oss-1.8.11.tar.gz
+sudo apt-get install checkinstall
 
-tar -xvf makemkv-bin-1.8.11.tar.gz
-tar -xvf makemkv-oss-1.8.11.tar.gz
+wget "http://www.makemkv.com/download/"
+export curr_version=$(grep -m 1 "MakeMKV v" index.html | sed -e "s/.*MakeMKV v//;s/ (.*//")
 
-cd ./makemkv-bin-1.8.11
-make
-expect "Please type \"yes\" if you accept the terms of the license"
-send "yes\n"
-sudo make install
+echo "Scraped the MakeMKV download page and found the latest version as" ${curr_version}
 
-cd ../makemkv-oss-1.8.11
+export bin_zip=makemkv-bin-${curr_version}.tar.gz
+export oss_zip=makemkv-oss-${curr_version}.tar.gz
+export oss_folder=makemkv-oss-${curr_version}
+export bin_folder=makemkv-bin-${curr_version}
+
+wget http://www.makemkv.com/download/$bin_zip
+wget http://www.makemkv.com/download/$oss_zip
+
+tar -xzvf $bin_zip
+tar -xzvf $oss_zip
+
+cd $oss_folder
 ./configure
 make
-expect "Please type \"yes\" if you accept the terms of the license"
-send "yes\n"
-sudo make install
+sudo checkinstall make install
+
+cd ../$bin_folder
+make
+sudo checkinstall make install
 
 cd ..
 
-rm -rf makemkv-*
+echo removing downloaded files
+rm index.html
+rm $bin_zip
+rm $oss_zip
+rm -rf $oss_folder
+rm -rf $bin_folder

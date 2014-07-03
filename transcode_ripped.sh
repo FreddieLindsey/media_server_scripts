@@ -43,9 +43,9 @@ for video_file in $files_to_rename
 do
 	name_file=$(basename $video_file)
 	echo "
-Processing $name_file with filebot...
+Processing "$name_file" with filebot...
 "
-	filebot -rename -non-strict --db thetvdb $video_file | tee /dev/tty
+	filebot -rename -non-strict --db thetvdb "$video_file" | grep "$video_file"
 	
 done
 }

@@ -11,12 +11,12 @@ tar -xvf makemkv-bin-1.8.11.tar.gz
 tar -xvf makemkv-oss-1.8.11.tar.gz
 
 cd ./makemkv-bin-1.8.11
-./configure
-make
+yes | make
 sudo make install
 
 cd ../makemkv-oss-1.8.11
-make
+./configure
+yes | make
 sudo make install
 
 cd ..

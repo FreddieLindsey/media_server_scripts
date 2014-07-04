@@ -18,6 +18,18 @@ configfile="$script_directory/media_centre_config.conf"
 #--------------------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------------------#
 
+### Checks the OS being used
+check_os () {
+	if [ "$(uname)" = "Darwin" ]; then
+		OS="Mac"
+	elif [ "$(uname)" = "Linux" ]; then
+		OS="Linux"
+	else
+		echo "Your Operating System is not supported. Please request support via GitHub. If you feel there is an issue, please post it on GitHub."
+		exit
+	fi
+}
+
 ### Checks the config file above and ensures the config file being used is clean
 get_source () 
 {
@@ -74,6 +86,13 @@ get_disc_info () {
 
 # Rips the disc in the drive to the folder name specified in argument 1 inside the set ripping location 
 makemkv_rip () {
+	# Set the location of makemkvcon according to the OS in use.
+	if [ "$OS" = "Mac" ]; then
+		makemkvcon="$makemkvcon_mac"
+	else
+		makemkvcon="makemkvcon"
+	fi
+	
 	echo "Starting ripping the disc in the drive to the folder $HOME$ripping_loc/$1...
 	"
 	mkdir $HOME$ripping_loc/$1
@@ -136,6 +155,9 @@ fi
 #-----SCRIPT START---------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------------------#
+
+# Check OS type
+check_os
 
 # Get the source config file, and clean if necessary
 get_source

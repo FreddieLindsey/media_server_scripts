@@ -14,7 +14,7 @@ script=$0
 cd `dirname $script`
 script_directory=$(pwd -P)
 
-config_file="$script_directory/media_centre_config.conf"
+config_file="$script_directory/media_server_config.conf"
 
 #--------------------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------------------#
@@ -23,7 +23,6 @@ config_file="$script_directory/media_centre_config.conf"
 #--------------------------------------------------------------------------------------------------#
 
 check_directories () {
-
 # Check the directory exists, in either the specified location, or in the home folder, and if neither are present, creates a new one.
 case $1 in
 	ripping)
@@ -68,7 +67,6 @@ case $1 in
 		fi
 	;;
 esac
-
 }
 
 sanity_check () {
@@ -129,6 +127,7 @@ fi
 
 rename_folder_with_filebot () { # $1 is the directory where the files are, $2 is the database to use (thetvdb or themoviedb are recommended).
 files_to_rename=$1/*
+filebot_names=()
 for video_file in $files_to_rename
 do
 	echo "
@@ -140,8 +139,41 @@ Processing "$(basename "$video_file")" with filebot...
 	echo ""$(basename "$video_file")" renamed to "$(basename "$new_name")"
 	" >&2
 	
+	new_name_underscored=$(echo "$1/$(basename "$new_name")" | tr '_' '%' | tr ' ' '_')
+	filebot_names+=("$new_name_underscored")
+	
 done
 }
+
+# Transcodes a given array of files ($1) from a given input folder ($2), using a given temp folder ($3), to a given output folder ($4)
+transcode_folder () {
+input="$1[@]"
+input_folder="$2"
+temporary="$3"
+output_root="$4"
+
+rm -rf "$temporary" # Clean the temporary directory
+
+input_array=("${!input}")
+
+for i in ${input_array[@]}; do
+	input_file=$(echo "$i" | tr '_' ' ' | tr '%' '_')
+	echo "
+Processing $(basename "$input_file") in $(dirname "$input_file")...
+" >&2
+done
+}
+
+# Transcode a file ($1) using HandBrake, to a given output file ($2), using a given command ($3)
+transcode_handbrake () {
+	echo "
+Will transcode $(basename "$1") to $(basename "$2") using HandBrake...
+" >&2
+	echo $(nice HandBrakeCLI -i "$1" -o "$2" $3) >&1
+	echo "
+Finished transcoding $(basename "$1") to $(basename "$2")
+" >&2
+} 
 
 #--------------------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------------------#
@@ -154,3 +186,5 @@ sanity_check
 script_already_running
 
 rename_folder_with_filebot "$transcoding" "themoviedb"
+
+transcode_folder filebot_names "$transcoding" "$temp" "$output"

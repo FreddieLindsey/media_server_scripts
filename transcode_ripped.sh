@@ -37,15 +37,18 @@ Script is not already running, will proceed.
 fi
 }
 
-rename_folder_with_filebot () {
+rename_folder_with_filebot () { # $1 is the directory where the files are, $2 is the database to use (thetvdb or themoviedb are recommended).
 files_to_rename=$1/*
 for video_file in $files_to_rename
 do
-	name_file=$(basename $video_file)
 	echo "
-Processing "$name_file" with filebot...
+Processing "$(basename "$video_file")" with filebot...
 "
-	filebot -rename -non-strict --db thetvdb "$video_file" | grep "$video_file"
+	filebot_output=$( echo $(filebot -rename -non-strict --db $2 --format "{n} ({y}) ({sdhd} {resolution})" "$video_file" | cut -d'[' -f 3 ) | cut -d']' -f 1)
+	
+	
+	echo ""$(basename "$video_file")" renamed to "$(basename "$filebot_output")"
+	" >&2
 	
 done
 }
@@ -58,4 +61,4 @@ done
 
 script_already_running
 
-rename_folder_with_filebot "$HOME/Movies/TV"
+rename_folder_with_filebot "$HOME/Movies/Discs" "themoviedb"

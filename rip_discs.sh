@@ -10,7 +10,7 @@ script=$0
 cd `dirname $script`
 script_directory=$(pwd -P)
 
-configfile="$script_directory/media_centre_config.conf"
+configfile="$script_directory/media_server_config.conf"
 
 #--------------------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------------------#

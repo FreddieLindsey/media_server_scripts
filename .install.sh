@@ -84,6 +84,9 @@ installer_script () {
 		cp $handbrake_image_location/HandBrakeCLI /usr/local/bin/
 		diskutil unmountDisk $handbrake_image_raw >/dev/null 2>&1
 		rm HandBrakeCLI.dmg
+		echo "
+HandBrakeCLI has been installed successfully.
+		" >&2
 		fi
 	;;
 	handbrakecli_linux)
@@ -130,7 +133,9 @@ What is your token for duckdns.org?" >&2
 				(sudo crontab -u $username_current -l; echo "$line" ) | sudo crontab -u $username_current -
 			fi
 			/usr/local/bin/duckdns/duck.sh >/dev/null 2>&1
-			if [[ "$(cat /usr/local/bin/duckdns/duck.log)" == "OK" ]]; then echo "DuckDNS installed successfully. Please continue."; else echo "DuckDNS has not been installed correctly, please seek advice on installation from https://www.duckdns.org" >&2; fi
+			if [[ "$(cat /usr/local/bin/duckdns/duck.log)" == "OK" ]]; then echo "
+DuckDNS installed successfully. Please continue." >&2; else echo "
+DuckDNS has not been installed correctly, please seek advice on installation from https://www.duckdns.org" >&2; fi
 		fi
 		
 		fi
@@ -143,10 +148,10 @@ What is your token for duckdns.org?" >&2
 		rm PlexMediaServer.zip
 		if [[ -e "/Applications/Plex Media Server.app" ]]; then rm /Applications/Plex\ Media\ Server.app; fi
 		mv Plex\ Media\ Server.app /Applications/Plex\ Media\ Server.app >/dev/null 2>&1
-		spctl --add --label "Plex_Media_Server" /Applications/Plex\ Media\ Server.app
-		spctl --enable --label "Plex_Media_Server"
-		open /Applications/Plex\ Media\ Server.app
+		sudo spctl --add --label "Plex_Media_Server" /Applications/Plex\ Media\ Server.app
+		sudo spctl --enable --label "Plex_Media_Server"
 		echo "
+Plex Media Server has now been installed. Double-click on it in your Applications folder to start the server.
 You can now manage your Plex Media Server at the following address:
 
 http://localhost:32400/web/index.html	(from the computer itself)
@@ -161,6 +166,7 @@ http://$ip_address:32400/web/index.html	(from any other computer on the network)
 		apt-get install plexmediaserver
 		ip_address="$(ifconfig | grep "Bcast" | grep "inet" | cut -d ":" -f 2 | cut -d ' ' -f 1)"
 		echo "
+Plex Media Server has now been installed.
 You can now manage your Plex Media Server at the following address:
 
 http://localhost:32400/web/index.html	(from the computer itself)
@@ -193,8 +199,8 @@ Are you certain you wish to install it? [y/n]"
 		rm filebot.app.tar.gz
 		if [[ -e "/Applications/FileBot.app" ]]; then rm "/Applications/FileBot.app"; fi
 		mv FileBot.app /Applications/FileBot.app >/dev/null 2>&1
-		spctl --add --label "FileBot" /Applications/FileBot.app
-		spctl --enable --label "FileBot"
+		sudo spctl --add --label "FileBot" /Applications/FileBot.app
+		sudo spctl --enable --label "FileBot"
 		fi
 	;;
 	filebot_linux)
@@ -226,7 +232,7 @@ Are you certain you wish to install it? [y/n]"
 	;;
 	ssh_daemon)
 		if [[ $openssh ]]; then
-		systemsetup -setremotelogin on
+		sudo systemsetup -setremotelogin on
 		fi
 	;;
 	esac

@@ -229,8 +229,6 @@ Are you certain you wish to install it? [y/n]"
 
 username_current=$(basename $HOME)
 
-sudo su
-
 # Checks the operating system being used to determine which script to run
 check_os
 
@@ -239,11 +237,11 @@ warning_message
 
 # Installer for each OS
 if [[ "$OS" == "Mac" ]]; then
-	install handbrakecli_mac
-	install filebot_mac
-	install plexmediaserver_mac
-	install duckdns
-	install ssh_daemon
+	sudo install handbrakecli_mac
+	sudo install filebot_mac
+	sudo install plexmediaserver_mac
+	sudo install duckdns
+	sudo install ssh_daemon
 	echo "
 
 The installation has finished. Please enjoy your server! Download and watch responsibly!

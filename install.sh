@@ -78,7 +78,8 @@ install () {
 	handbrakecli_mac)
 		if [[ $handbrakecli ]]; then
 		wget -O HandBrakeCLI.dmg http://sourceforge.net/projects/handbrake/files/0.9.9/HandBrake-0.9.9-MacOSX.6_CLI_x86_64.dmg/download
-		hdiutil attach HandBrakeCLI.dmg 
+		handbrake_image_location=$(hdiutil attach HandBrakeCLI.dmg | grep /Volumes/ | awk -F $'\t' '{print $NF}')
+		cp $handbrake_image_location/HandBrakeCLI /usr/local/bin/
 		fi
 	;;
 	handbrakecli_linux)
@@ -139,6 +140,13 @@ What is your token for duckdns.org?" >&2
 		rsync --delete-before Plex\ Media\ Server.app /Applications/Plex\ Media\ Server.app
 		spctl --add --label "Plex_Media_Server" /Applications/Plex\ Media\ Server.app
 		spctl --enable --label "Plex_Media_Server"
+		open /Applications/Plex\ Media\ Server.app
+		echo "
+You can now manage your Plex Media Server at the following address:
+
+http://localhost:32400/web/index.html	(from the computer itself)
+http://$ip_address:32400/web/index.html	(from any other computer on the network)
+" >&2
 		fi
 	;;
 	plexmediaserver_linux)
@@ -165,7 +173,7 @@ Roku sell extremely cheap Plex clients. Roku's Roku 3 is the best solution at ar
 Are you certain you wish to install it? [y/n]"
 		read plexht_answer
 		if [[ "$(echo $plexht_answer | cut -c 1)" == "y" || "$(echo $plexht_answer | cut -c 1)" == "Y" ]]; then
-		
+			echo "Would be installing PHT here" >&2
 		fi
 	;;
 	filebot_mac)
@@ -193,12 +201,12 @@ Are you certain you wish to install it? [y/n]"
 	;;
 	makemkv_mac)
 		if [[ $makemkv ]]; then
-		
+			echo "Would be installing MakeMKV here" >&2
 		fi
 	;;
 	makemkv_linux)
 		if [[ $makemkv ]]; then
-		
+			echo "Would be installing MakeMKV here" >&2
 		fi
 	;;
 	avahi_daemon)

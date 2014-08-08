@@ -10,6 +10,7 @@ if [[ "$(echo "/$(ls -ld $0 | cut -d '/' -f 2-)" | grep -)" != "" ]]; then
 fi
 script_directory=$(echo `dirname $script`)
 username_current="$1"
+echo "$username_current" >&2
 
 configfile="$script_directory/media_server.cfg"
 if [[ -f "$configfile" ]]; then echo "
@@ -230,7 +231,9 @@ Are you certain you wish to install it? [y/n]"
 	;;
 	ssh_daemon)
 		if [[ $openssh ]]; then
-		sudo systemsetup -setremotelogin on
+		sudo systemsetup -setremotelogin on >/dev/null 2>&1
+		else
+		sudo systemsetup -setremotelogin off >/dev/null 2>&1
 		fi
 	;;
 	esac

@@ -157,7 +157,9 @@ Do you have a dynamic address for duckdns.org? [y/n]" >&2
 				mkdir "/usr/local/bin/duckdns"
 			fi
 			touch /usr/local/bin/duckdns/duck.sh
+			touch /usr/local/bin/duckdns/duck.log
 			chmod +x /usr/local/bin/duckdns/duck.sh
+			chown -R $username_current /usr/local/bin/duckdns
 			echo "
 What is your dynamic address for duckdns.org? e.g. for someaddress.duckdns.org type someaddress in below and then hit [ENTER]" >&2
 			read dynamicaddress
@@ -305,7 +307,8 @@ FileBot has been installed successfully.
 	makemkv_mac)
 		if [[ $makemkv ]]; then
 		echo "
-MakeMKV is installing..." >&2
+MakeMKV is installing...
+When prompted, please agree to the license agreement." >&2
 		wget -O makemkv.html http://www.makemkv.com/download >/dev/null 2>&1
 		makemkv_version=$(cat makemkv.html | grep 'MakeMKV v' | awk -F 'MakeMKV v' '{print $2}' | cut -d ' ' -f 1 | head -n 1)
 		rm makemkv.html
@@ -313,7 +316,7 @@ MakeMKV is installing..." >&2
 		wget -O makemkv.dmg $makemkv_url >/dev/null 2>&1
 		makemkv_image_location=$(hdiutil attach makemkv.dmg | grep /Volumes/ | awk -F $'\t' '{print $NF}')
 		makemkv_image_raw=$(hdiutil attach makemkv.dmg | grep /Volumes/ | awk -F $'\t' '{print $1}')
-		cp $makemkv_image_location/MakeMKV.app /Applications/
+		cp -R $makemkv_image_location/MakeMKV.app /Applications/
 		installer -pkg $makemkv_image_location/daspi* -target / >/dev/null 2>&1
 		diskutil unmountDisk $makemkv_image_raw >/dev/null 2>&1
 		rm makemkv.dmg

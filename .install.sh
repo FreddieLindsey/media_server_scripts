@@ -37,6 +37,16 @@ check_os () {
 	fi
 }
 
+# Warnings about the OS
+warning_message () {
+if [[ "$OS" == "Mac" ]]; then
+echo "
+Since you are on Mac OS X, transmission_daemon won't be installed. All torrent downloads must be handled manually.
+
+" >&2
+fi
+}
+
 # Install transmission-daemon for Mac (includes MacPorts, and agreeing to Xcode's license agreement)
 install_transmission_daemon_mac () {
 # Install Xcode Command-line Tools
@@ -200,6 +210,9 @@ Are you certain you wish to install it? [y/n]"
 		mv FileBot.app /Applications/FileBot.app >/dev/null 2>&1
 		sudo spctl --add --label "FileBot" /Applications/FileBot.app
 		sudo spctl --enable --label "FileBot"
+		echo "
+FileBot has been installed successfully.
+		" >&2
 		fi
 	;;
 	filebot_linux)
@@ -232,8 +245,14 @@ Are you certain you wish to install it? [y/n]"
 	ssh_daemon)
 		if [[ $openssh ]]; then
 		sudo systemsetup -setremotelogin on >/dev/null 2>&1
+		echo "
+Remote Login (ssh) has been switched on.
+		" >&2
 		else
 		sudo systemsetup -setremotelogin off >/dev/null 2>&1
+		echo "
+Remote Login (ssh) has been switched off.
+		" >&2
 		fi
 	;;
 	esac

@@ -78,11 +78,11 @@ installer_script () {
 	;;
 	handbrakecli_mac)
 		if [[ $handbrakecli ]]; then
-		wget -O HandBrakeCLI.dmg http://sourceforge.net/projects/handbrake/files/0.9.9/HandBrake-0.9.9-MacOSX.6_CLI_x86_64.dmg/download
+		wget -O HandBrakeCLI.dmg http://sourceforge.net/projects/handbrake/files/0.9.9/HandBrake-0.9.9-MacOSX.6_CLI_x86_64.dmg/download >/dev/null 2>&1
 		handbrake_image_location=$(hdiutil attach HandBrakeCLI.dmg | grep /Volumes/ | awk -F $'\t' '{print $NF}')
 		handbrake_image_raw=$(hdiutil attach HandBrakeCLI.dmg | grep /Volumes/ | awk -F $'\t' '{print $1}')
 		cp $handbrake_image_location/HandBrakeCLI /usr/local/bin/
-		diskutil unmountDisk $handbrake_image_raw
+		diskutil unmountDisk $handbrake_image_raw >/dev/null 2>&1
 		rm HandBrakeCLI.dmg
 		fi
 	;;
@@ -125,11 +125,11 @@ What is your token for duckdns.org?" >&2
 			read token
 			duckdns_command="echo url=\"https://www.duckdns.org/update?domains=$dynamicaddress&token=$token&ip=\" | curl -k -o /usr/local/bin/duckdns/duck.log -K -"
 			echo $duckdns_command >> "/usr/local/bin/duckdns/duck.sh"
-			if [[ "$(crontab -u $username_current -l | grep duck.sh)" == "" ]]; then
+			if [[ "$(sudo crontab -u $username_current -l | grep duck.sh)" == "" ]]; then
 				line="*/5 * * * * /usr/local/bin/duckdns/duck.sh >/dev/null 2>&1"
-				(crontab -u $username_current -l; echo "$line" ) | crontab -u $username_current -
+				(sudo crontab -u $username_current -l; echo "$line" ) | sudo crontab -u $username_current -
 			fi
-			/usr/local/bin/duckdns/duck.sh
+			/usr/local/bin/duckdns/duck.sh >/dev/null 2>&1
 			if [[ "$(cat /usr/local/bin/duckdns/duck.log)" == "OK" ]]; then echo "DuckDNS installed successfully. Please continue."; else echo "DuckDNS has not been installed correctly, please seek advice on installation from https://www.duckdns.org" >&2; fi
 		fi
 		

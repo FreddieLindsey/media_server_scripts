@@ -80,7 +80,10 @@ installer_script () {
 		if [[ $handbrakecli ]]; then
 		wget -O HandBrakeCLI.dmg http://sourceforge.net/projects/handbrake/files/0.9.9/HandBrake-0.9.9-MacOSX.6_CLI_x86_64.dmg/download
 		handbrake_image_location=$(hdiutil attach HandBrakeCLI.dmg | grep /Volumes/ | awk -F $'\t' '{print $NF}')
+		handbrake_image_raw=$(hdiutil attach HandBrakeCLI.dmg | grep /Volumes/ | awk -F $'\t' '{print $1}')
 		cp $handbrake_image_location/HandBrakeCLI /usr/local/bin/
+		diskutil unmountDisk $handbrake_image_raw
+		rm HandBrakeCLI.dmg
 		fi
 	;;
 	handbrakecli_linux)
@@ -135,10 +138,11 @@ What is your token for duckdns.org?" >&2
 	plexmediaserver_mac)
 		if [[ $pms ]]; then
 		plexmediaserver_version=0.9.9.14.531-7eef8c6
-		wget -O PlexMediaServer.zip http://downloads.plexapp.com/plex-media-server/$plexmediaserver_version/PlexMediaServer-$plexmediaserver_version-OSX.zip
-		tar -xvf PlexMediaServer.zip
+		wget -O PlexMediaServer.zip http://downloads.plexapp.com/plex-media-server/$plexmediaserver_version/PlexMediaServer-$plexmediaserver_version-OSX.zip >/dev/null 2>&1
+		tar -xvf PlexMediaServer.zip >/dev/null 2>&1
 		rm PlexMediaServer.zip
-		rsync --delete-before Plex\ Media\ Server.app /Applications/Plex\ Media\ Server.app
+		if [[ -e "/Applications/Plex Media Server.app" ]]; then rm /Applications/Plex\ Media\ Server.app; fi
+		mv Plex\ Media\ Server.app /Applications/Plex\ Media\ Server.app >/dev/null 2>&1
 		spctl --add --label "Plex_Media_Server" /Applications/Plex\ Media\ Server.app
 		spctl --enable --label "Plex_Media_Server"
 		open /Applications/Plex\ Media\ Server.app
@@ -180,35 +184,39 @@ Are you certain you wish to install it? [y/n]"
 	;;
 	filebot_mac)
 		if [[ $filebot ]]; then
-			wget -O filebot.html http://www.filebot.net
-			filebot_version=$(cat filebot.html | grep ".app" | awk -F 'type=app' '{print $2}' | awk -F '_' '{print $NF}' | awk -F '.app' '{print $1}' | tail -n 1)
-			rm filebot.html
-			filebot_url="http://sourceforge.net/projects/filebot/files/filebot/FileBot_$filebot_version""/FileBot_$filebot_version"".app.tar.gz/download"
-			wget -O filebot.app.tar.gz $filebot_url
-			tar -xvf filebot.app.tar.gz
-			rm filebot.app.tar.gz
+		wget -O filebot.html http://www.filebot.net >/dev/null 2>&1
+		filebot_version=$(cat filebot.html | grep ".app" | awk -F 'type=app' '{print $2}' | awk -F '_' '{print $NF}' | awk -F '.app' '{print $1}' | tail -n 1)
+		rm filebot.html
+		filebot_url="http://sourceforge.net/projects/filebot/files/filebot/FileBot_$filebot_version""/FileBot_$filebot_version"".app.tar.gz/download"
+		wget -O filebot.app.tar.gz $filebot_url >/dev/null 2>&1
+		tar -xvf filebot.app.tar.gz >/dev/null 2>&1
+		rm filebot.app.tar.gz
+		if [[ -e "/Applications/FileBot.app" ]]; then rm "/Applications/FileBot.app"; fi
+		mv FileBot.app /Applications/FileBot.app >/dev/null 2>&1
+		spctl --add --label "FileBot" /Applications/FileBot.app
+		spctl --enable --label "FileBot"
 		fi
 	;;
 	filebot_linux)
 		if [[ $filebot ]]; then
-			wget -O filebot.html http://www.filebot.net
-			filebot_version=$(cat filebot.html | grep deb | awk -F 'amd64' '{print $(NF-1)}' | awk -F '_' '{print $(NF-1)}')
-			rm filebot.html
-			filebot_url="http://sourceforge.net/projects/filebot/files/filebot/FileBot_$filebot_version""/filebot_$filebot_version""_amd64.deb/download"
-			wget -O filebot.deb $filebot_url
-			dpkg -i filebot.deb
-			apt-get -f -y install
-			rm filebot.deb
+		wget -O filebot.html http://www.filebot.net
+		filebot_version=$(cat filebot.html | grep deb | awk -F 'amd64' '{print $(NF-1)}' | awk -F '_' '{print $(NF-1)}')
+		rm filebot.html
+		filebot_url="http://sourceforge.net/projects/filebot/files/filebot/FileBot_$filebot_version""/filebot_$filebot_version""_amd64.deb/download"
+		wget -O filebot.deb $filebot_url
+		dpkg -i filebot.deb
+		apt-get -f -y install
+		rm filebot.deb
 		fi
 	;;
 	makemkv_mac)
 		if [[ $makemkv ]]; then
-			echo "Would be installing MakeMKV here" >&2
+		echo "Would be installing MakeMKV here" >&2
 		fi
 	;;
 	makemkv_linux)
 		if [[ $makemkv ]]; then
-			echo "Would be installing MakeMKV here" >&2
+		echo "Would be installing MakeMKV here" >&2
 		fi
 	;;
 	avahi_daemon)
@@ -239,6 +247,7 @@ if [[ "$OS" == "Mac" ]]; then
 	installer_script handbrakecli_mac
 	installer_script filebot_mac
 	installer_script plexmediaserver_mac
+	installer_script plexhometheater
 	installer_script duckdns
 	installer_script ssh_daemon
 	echo "

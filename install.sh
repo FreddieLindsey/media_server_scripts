@@ -175,6 +175,7 @@ Are you certain you wish to install it? [y/n]"
 		if [[ "$(echo $plexht_answer | cut -c 1)" == "y" || "$(echo $plexht_answer | cut -c 1)" == "Y" ]]; then
 			echo "Would be installing PHT here" >&2
 		fi
+		fi
 	;;
 	filebot_mac)
 		if [[ $filebot ]]; then

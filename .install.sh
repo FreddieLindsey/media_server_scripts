@@ -38,60 +38,67 @@ check_os () {
 
 # Warnings about the OS
 warning_message () {
-if [[ "$OS" == "Mac" ]]; then
-echo "
-Since you are on Mac OS X, transmission_daemon won't be installed. All torrent downloads must be handled manually.
-
-" >&2
+if [[ "$OS" == "Linux" ]]; then
+echo "Please note that the scripts are currently untested on anything other than Ubuntu 12.04 LTS (the dependency of Private Internet Access)." >&2
 fi
 }
 
 # Installer script for each program
 installer_script () {
 	case "$1" in
+	osx_cli_tools)
+	echo "
+Mac OS X Command Line Tools are installing..." >&2
+	wget -O CLITools.dmg http://adcdownload.apple.com/Developer_Tools/command_line_tools_os_x_10.9_for_xcode__late_july_2014/command_line_tools_for_os_x_mavericks_late_july_2014.dmg
+	command_line_tools_image_location=$(hdiutil attach makemkv.dmg | grep /Volumes/ | awk -F $'\t' '{print $NF}')
+	command_line_tools_image_raw=$(hdiutil attach makemkv.dmg | grep /Volumes/ | awk -F $'\t' '{print $1}')
+	installer -pkg $command_line_tools_image_location/ -target / >/dev/null 2>&1
+	diskutil unmountDisk $command_line_tools_image_raw >/dev/null 2>&1
+	rm CLITools.dmg
+	echo "
+You will now have to accept the license agreement for Xcode before you can continue." >&2
+	sleep 3
+	xcodebuild -license
+	echo "
+Mac OS X Command Line Tools have been successfully installed." >&2
+	;;
+	homebrew)
+	echo "
+Homebrew is installing..." >&2
+	ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
+	echo "
+Homebrew has been successfully installed." >&2
+	;;
 	transmission_daemon_mac)
-<<UNFINISHED
-	# Install Xcode Command-line Tools
-wget -O CLITools.dmg http://adcdownload.apple.com/Developer_Tools/command_line_tools_os_x_10.9_for_xcode__late_july_2014/command_line_tools_for_os_x_mavericks_late_july_2014.dmg
-hdiutil attach CLITools.dmg
-echo "
-On your Mac, please now install the Xcode Command-line Tools. The disk image has been mounted. You can find it using Finder.
-
-Once installed successfully, please hit [ENTER]:	">&2
-read finished_xcode_install
-
-echo "You will now have to accept the license agreement for Xcode before you can continue.
-" >&2
-sleep 3
-xcodebuild -license
-
-wget -O MacPortsVersion.html http://www.macports.org/install.php
-macports_version_number=$(echo $(cat MacPortsVersion.html | grep "MacPorts version " | cut -d '>' -f 2- | cut -d ' ' -f 3))
-rm MacPortsVersion.html
-macports_latest_url="https://distfiles.macports.org/MacPorts/MacPorts-$macports_version_number.tar.gz"
-wget -O MacPortsSource.tar.gz $macports_latest_url
-tar -xvf MacPortsSource.tar.gz && rm MacPortsSource.tar.gz
-cd MacPorts-*
-./configure && make && sudo make install
-UNFINISHED
+		if [[ $transmission_daemon ]]; then
+		echo "
+transmission-daemon is installing..." >&2
+		brew update >/dev/null 2>&1
+		brew install transmission >/dev/null 2>&1
+		echo "
+transmission-daemon has been installed successfully.
+		" >&2
+		fi
 	;;
 	transmission_daemon_linux)
 		if [[ $transmission_daemon ]]; then
 		echo "
 transmission-daemon is installing..." >&2
-		add-apt-repository -y ppa:transmissionbt/ppa
-		apt-get update
-		apt-get install transmission-common transmission-daemon transmission-cli
-		apt-get -f install
-		fi
+		add-apt-repository -y ppa:transmissionbt/ppa >/dev/null 2>&1
+		apt-get update >/dev/null 2>&1
+		apt-get install transmission-common transmission-daemon transmission-cli >/dev/null 2>&1
+		apt-get -f install >/dev/null 2>&1
 		echo "
 transmission-daemon has been installed successfully.
 		" >&2
+		fi
 	;;
 	mkvtoolnix_mac)
 		if [[ $mkvtoolnix ]]; then
 		echo "
 MKVtoolnix is installing..." >&2
+		brew update >/dev/null 2>&1
+		brew install mkvtoolnix >/dev/null 2>&1
 		echo "
 MKVtoolnix has been installed successfully" >&2
 		fi
@@ -100,6 +107,10 @@ MKVtoolnix has been installed successfully" >&2
 		if [[ $mkvtoolnix ]]; then
 		echo "
 MKVtoolnix is installing..." >&2
+		add-apt-repository -y 'deb http://www.bunkus.org/ubuntu/trusty/ ./'
+		add-apt-repository -y 'deb-src http://www.bunkus.org/ubuntu/trusty/ ./'
+		apt-get update
+		apt-get -y install mkvtoolnix
 		echo "
 MKVtoolnix has been installed successfully" >&2
 		fi
@@ -367,7 +378,9 @@ warning_message
 
 # Installer for each OS
 if [[ "$OS" == "Mac" ]]; then
+	installer_script homebrew
 	installer_script makemkv_mac
+	installer_script mkvtoolnix_mac
 	installer_script handbrakecli_mac
 	installer_script filebot_mac
 	installer_script plexmediaserver_mac
@@ -382,6 +395,7 @@ The installation has finished. Please enjoy your server! Download and watch resp
 " >&2
 elif [[ "$OS" == "Linux" ]]; then
 	installer_script makemkv_linux
+	installer_script mkvtoolnix_linux
 	installer_script handbrakecli_linux
 	installer_script filebot_linux
 	installer_script plexmediaserver_linux

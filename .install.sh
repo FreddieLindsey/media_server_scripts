@@ -128,10 +128,8 @@ What is your token for duckdns.org?" >&2
 			read token
 			duckdns_command="echo url=\"https://www.duckdns.org/update?domains=$dynamicaddress&token=$token&ip=\" | curl -k -o /usr/local/bin/duckdns/duck.log -K -"
 			echo $duckdns_command >> "/usr/local/bin/duckdns/duck.sh"
-			if [[ "$(sudo crontab -u $username_current -l | grep duck.sh)" == "" ]]; then
-				line="*/5 * * * * /usr/local/bin/duckdns/duck.sh >/dev/null 2>&1"
-				(sudo crontab -u $username_current -l; echo "$line" ) | sudo crontab -u $username_current -
-			fi
+			line="*/5 * * * * /usr/local/bin/duckdns/duck.sh >/dev/null 2>&1"
+			sudo su root -c "crontab -u $username_current -l; echo \"$line\" | sudo crontab -u $username_current -"
 			/usr/local/bin/duckdns/duck.sh >/dev/null 2>&1
 			if [[ "$(cat /usr/local/bin/duckdns/duck.log)" == "OK" ]]; then echo "
 DuckDNS installed successfully. Please continue." >&2; else echo "
@@ -146,7 +144,7 @@ DuckDNS has not been installed correctly, please seek advice on installation fro
 		wget -O PlexMediaServer.zip http://downloads.plexapp.com/plex-media-server/$plexmediaserver_version/PlexMediaServer-$plexmediaserver_version-OSX.zip >/dev/null 2>&1
 		tar -xvf PlexMediaServer.zip >/dev/null 2>&1
 		rm PlexMediaServer.zip
-		if [[ -e "/Applications/Plex Media Server.app" ]]; then rm /Applications/Plex\ Media\ Server.app; fi
+		if [[ -e "/Applications/Plex Media Server.app" ]]; then rm -rf /Applications/Plex\ Media\ Server.app; fi
 		mv Plex\ Media\ Server.app /Applications/Plex\ Media\ Server.app >/dev/null 2>&1
 		sudo spctl --add --label "Plex_Media_Server" /Applications/Plex\ Media\ Server.app
 		sudo spctl --enable --label "Plex_Media_Server"
@@ -197,7 +195,7 @@ Are you certain you wish to install it? [y/n]"
 		wget -O filebot.app.tar.gz $filebot_url >/dev/null 2>&1
 		tar -xvf filebot.app.tar.gz >/dev/null 2>&1
 		rm filebot.app.tar.gz
-		if [[ -e "/Applications/FileBot.app" ]]; then rm "/Applications/FileBot.app"; fi
+		if [[ -e "/Applications/FileBot.app" ]]; then rm -rf "/Applications/FileBot.app"; fi
 		mv FileBot.app /Applications/FileBot.app >/dev/null 2>&1
 		sudo spctl --add --label "FileBot" /Applications/FileBot.app
 		sudo spctl --enable --label "FileBot"

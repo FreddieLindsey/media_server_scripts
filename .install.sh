@@ -10,7 +10,6 @@ if [[ "$(echo "/$(ls -ld $0 | cut -d '/' -f 2-)" | grep -)" != "" ]]; then
 fi
 script_directory=$(echo `dirname $script`)
 username_current="$1"
-echo "$username_current" >&2
 
 configfile="$script_directory/media_server.cfg"
 if [[ -f "$configfile" ]]; then echo "
@@ -47,9 +46,12 @@ Since you are on Mac OS X, transmission_daemon won't be installed. All torrent d
 fi
 }
 
-# Install transmission-daemon for Mac (includes MacPorts, and agreeing to Xcode's license agreement)
-install_transmission_daemon_mac () {
-# Install Xcode Command-line Tools
+# Installer script for each program
+installer_script () {
+	case "$1" in
+	transmission_daemon_mac)
+<<UNFINISHED
+	# Install Xcode Command-line Tools
 wget -O CLITools.dmg http://adcdownload.apple.com/Developer_Tools/command_line_tools_os_x_10.9_for_xcode__late_july_2014/command_line_tools_for_os_x_mavericks_late_july_2014.dmg
 hdiutil attach CLITools.dmg
 echo "
@@ -71,24 +73,41 @@ wget -O MacPortsSource.tar.gz $macports_latest_url
 tar -xvf MacPortsSource.tar.gz && rm MacPortsSource.tar.gz
 cd MacPorts-*
 ./configure && make && sudo make install
-
-
-
-}
-
-# Installer script for each program
-installer_script () {
-	case "$1" in
+UNFINISHED
+	;;
 	transmission_daemon_linux)
 		if [[ $transmission_daemon ]]; then
+		echo "
+transmission-daemon is installing..." >&2
 		add-apt-repository -y ppa:transmissionbt/ppa
 		apt-get update
 		apt-get install transmission-common transmission-daemon transmission-cli
 		apt-get -f install
 		fi
+		echo "
+transmission-daemon has been installed successfully.
+		" >&2
+	;;
+	mkvtoolnix_mac)
+		if [[ $mkvtoolnix ]]; then
+		echo "
+MKVtoolnix is installing..." >&2
+		echo "
+MKVtoolnix has been installed successfully" >&2
+		fi
+	;;
+	mkvtoolnix_linux)
+		if [[ $mkvtoolnix ]]; then
+		echo "
+MKVtoolnix is installing..." >&2
+		echo "
+MKVtoolnix has been installed successfully" >&2
+		fi
 	;;
 	handbrakecli_mac)
 		if [[ $handbrakecli ]]; then
+		echo "
+HandBrakeCLI is installing..." >&2
 		wget -O HandBrakeCLI.dmg http://sourceforge.net/projects/handbrake/files/0.9.9/HandBrake-0.9.9-MacOSX.6_CLI_x86_64.dmg/download >/dev/null 2>&1
 		handbrake_image_location=$(hdiutil attach HandBrakeCLI.dmg | grep /Volumes/ | awk -F $'\t' '{print $NF}')
 		handbrake_image_raw=$(hdiutil attach HandBrakeCLI.dmg | grep /Volumes/ | awk -F $'\t' '{print $1}')
@@ -102,20 +121,31 @@ HandBrakeCLI has been installed successfully.
 	;;
 	handbrakecli_linux)
 		if [[ $handbrakecli ]]; then
+		echo "
+HandBrakeCLI is installing..." >&2
 		add-apt-repository -y ppa:stebbins/handbrake-releases
 		apt-get update
 		apt-get install handbrake-cli
 		apt-get -f install
+		echo "
+HandBrakeCLI has been installed successfully.
+		" >&2
 		fi
 	;;
 	openssh_server)
 		if [[ $openssh ]]; then
+		echo "
+openssh-server is installing..." >&2
 		apt-get install openssh-server
 		apt-get -f install
+		echo "
+openssh-server has been installed successfully." >&2
 		fi
 	;;
 	duckdns)
 		if [[ $duckdns ]]; then
+		echo "
+DuckDNS is installing..." >&2
 		echo "
 Do you have a dynamic address for duckdns.org? [y/n]" >&2
 		read answer
@@ -139,8 +169,10 @@ What is your token for duckdns.org?" >&2
 			read token
 			duckdns_command="echo url=\"https://www.duckdns.org/update?domains=$dynamicaddress&token=$token&ip=\" | curl -k -o /usr/local/bin/duckdns/duck.log -K -"
 			echo $duckdns_command >> "/usr/local/bin/duckdns/duck.sh"
+			if [[ "$(sudo crontab -u $username_current -l | grep duck.sh)" == "" ]]; then
 			line="*/5 * * * * /usr/local/bin/duckdns/duck.sh >/dev/null 2>&1"
-			sudo su root -c "crontab -u $username_current -l; echo \"$line\" | sudo crontab -u $username_current -"
+			"sudo crontab -u $username_current -l; echo \"$line\" | sudo crontab -u $username_current -"
+			fi
 			/usr/local/bin/duckdns/duck.sh >/dev/null 2>&1
 			if [[ "$(cat /usr/local/bin/duckdns/duck.log)" == "OK" ]]; then echo "
 DuckDNS installed successfully. Please continue." >&2; else echo "
@@ -151,6 +183,8 @@ DuckDNS has not been installed correctly, please seek advice on installation fro
 	;;
 	plexmediaserver_mac)
 		if [[ $pms ]]; then
+		echo "
+Plex Media Server is installing..." >&2
 		plexmediaserver_version=0.9.9.14.531-7eef8c6
 		wget -O PlexMediaServer.zip http://downloads.plexapp.com/plex-media-server/$plexmediaserver_version/PlexMediaServer-$plexmediaserver_version-OSX.zip >/dev/null 2>&1
 		tar -xvf PlexMediaServer.zip >/dev/null 2>&1
@@ -170,6 +204,8 @@ http://$ip_address:32400/web/index.html	(from any other computer on the network)
 	;;
 	plexmediaserver_linux)
 		if [[ $pms ]]; then
+		echo "
+Plex Media Server is installing..." >&2
 		add-apt-repository -y "deb http://www.plexapp.com/repo lucid main"
 		apt-get update
 		apt-get install plexmediaserver
@@ -183,22 +219,56 @@ http://$ip_address:32400/web/index.html	(from any other computer on the network)
 " >&2
 		fi
 	;;
-	plexhometheater)
+	plexhometheater_mac)
 		if [[ $pht ]]; then
 		echo "
 Please understand that running Plex Home Theater on the same machine as the server is NOT recommended. All resources should be given to the server.
 
 Roku sell extremely cheap Plex clients. Roku's Roku 3 is the best solution at around £70/\$100.
 
-Are you certain you wish to install it? [y/n]"
+Given this, do you still want to install it? [y/n]"
 		read plexht_answer
 		if [[ "$(echo $plexht_answer | cut -c 1)" == "y" || "$(echo $plexht_answer | cut -c 1)" == "Y" ]]; then
-			echo "Would be installing PHT here" >&2
+		echo "
+Plex Home Theater is installing..." >&2
+		plexhometheater_version="1.2.1.314-7cb0133e"
+		wget -O PlexHomeTheater.zip http://downloads.plexapp.com/plex-home-theater/$plexmediaserver_version/PlexHomeTheater-$plexmediaserver_version-macosx-x86_64.zip >/dev/null 2>&1
+		tar -xvf PlexHomeTheater.zip >/dev/null 2>&1
+		rm PlexHomeTheater.zip
+		if [[ -e "/Applications/Plex Home Theater.app" ]]; then rm -rf /Applications/Plex\ Home\ Theater.app; fi
+		mv Plex\ Home\ Theater.app /Applications/Plex\ Hone\ Theater.app >/dev/null 2>&1
+		sudo spctl --add --label "Plex_Home_Theater" /Applications/Plex\ Home\ Theater.app
+		sudo spctl --enable --label "Plex_Home_Theater"
+		echo "
+Plex Home Theater has now been installed." >&2
+		fi
+		fi
+	;;
+	plexhometheater_linux)
+		if [[ $pht ]]; then
+		echo "
+Please understand that running Plex Home Theater on the same machine as the server is NOT recommended. All resources should be given to the server.
+
+Roku sell extremely cheap Plex clients. Roku's Roku 3 is the best solution at around £70/\$100.
+
+Given this, do you still want to install it? [y/n]"
+		read plexht_answer
+		if [[ "$(echo $plexht_answer | cut -c 1)" == "y" || "$(echo $plexht_answer | cut -c 1)" == "Y" ]]; then
+		echo "
+Plex Home Theater is installing..." >&2
+		add-apt-repository -y ppa:plexapp/plexht
+		add-apt-repository -y ppa:pulse-eight/libcec
+		apt-get update
+		apt-get -y install plexhometheater
+		echo "
+Plex Home Theater has now been installed." >&2
 		fi
 		fi
 	;;
 	filebot_mac)
 		if [[ $filebot ]]; then
+		echo "
+FileBot is installing..." >&2
 		wget -O filebot.html http://www.filebot.net >/dev/null 2>&1
 		filebot_version=$(cat filebot.html | grep ".app" | awk -F 'type=app' '{print $2}' | awk -F '_' '{print $NF}' | awk -F '.app' '{print $1}' | tail -n 1)
 		rm filebot.html
@@ -217,24 +287,48 @@ FileBot has been installed successfully.
 	;;
 	filebot_linux)
 		if [[ $filebot ]]; then
-		wget -O filebot.html http://www.filebot.net
+		echo "
+FileBot is installing..." >&2
+		wget -O filebot.html http://www.filebot.net >/dev/null 2>&1
 		filebot_version=$(cat filebot.html | grep deb | awk -F 'amd64' '{print $(NF-1)}' | awk -F '_' '{print $(NF-1)}')
 		rm filebot.html
 		filebot_url="http://sourceforge.net/projects/filebot/files/filebot/FileBot_$filebot_version""/filebot_$filebot_version""_amd64.deb/download"
-		wget -O filebot.deb $filebot_url
-		dpkg -i filebot.deb
-		apt-get -f -y install
+		wget -O filebot.deb $filebot_url >/dev/null 2>&1
+		dpkg -i filebot.deb >/dev/null 2>&1
+		apt-get -f -y install >/dev/null 2>&1
 		rm filebot.deb
+		echo "
+FileBot has been installed successfully.
+		" >&2
 		fi
 	;;
 	makemkv_mac)
 		if [[ $makemkv ]]; then
-		echo "Would be installing MakeMKV here" >&2
+		echo "
+MakeMKV is installing..." >&2
+		wget -O makemkv.html http://www.makemkv.com/download >/dev/null 2>&1
+		makemkv_version=$(cat makemkv.html | grep 'MakeMKV v' | awk -F 'MakeMKV v' '{print $2}' | cut -d ' ' -f 1 | head -n 1)
+		rm makemkv.html
+		makemkv_url="http://www.makemkv.com/download/makemkv_v$makemkv_version""_osx.dmg"
+		wget -O makemkv.dmg $makemkv_url >/dev/null 2>&1
+		makemkv_image_location=$(hdiutil attach makemkv.dmg | grep /Volumes/ | awk -F $'\t' '{print $NF}')
+		makemkv_image_raw=$(hdiutil attach makemkv.dmg | grep /Volumes/ | awk -F $'\t' '{print $1}')
+		cp $makemkv_image_location/MakeMKV.app /Applications/
+		installer -pkg $makemkv_image_location/daspi* -target / >/dev/null 2>&1
+		diskutil unmountDisk $makemkv_image_raw >/dev/null 2>&1
+		rm makemkv.dmg
+		echo "
+MakeMKV has been installed successfully.
+		" >&2
 		fi
 	;;
 	makemkv_linux)
 		if [[ $makemkv ]]; then
-		echo "Would be installing MakeMKV here" >&2
+		echo "
+MakeMKV is installing..." >&2
+		echo "
+MakeMKV has been installed successfully.
+		" >&2
 		fi
 	;;
 	avahi_daemon)
@@ -270,10 +364,12 @@ warning_message
 
 # Installer for each OS
 if [[ "$OS" == "Mac" ]]; then
+	installer_script makemkv_mac
 	installer_script handbrakecli_mac
 	installer_script filebot_mac
 	installer_script plexmediaserver_mac
-	installer_script plexhometheater
+	installer_script plexhometheater_mac
+	installer_script transmission_daemon_mac
 	installer_script duckdns
 	installer_script ssh_daemon
 	echo "
@@ -282,9 +378,11 @@ The installation has finished. Please enjoy your server! Download and watch resp
 
 " >&2
 elif [[ "$OS" == "Linux" ]]; then
+	installer_script makemkv_linux
 	installer_script handbrakecli_linux
 	installer_script filebot_linux
 	installer_script plexmediaserver_linux
+	installer_script plexhometheater_linux
 	installer_script transmission_daemon_linux
 	installer_script duckdns
 	installer_script avahi_daemon

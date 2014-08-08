@@ -67,7 +67,7 @@ cd MacPorts-*
 # Installer script for each program
 install () {
 	case "$1" in
-	transmission_daemon)
+	transmission_daemon_linux)
 		if [[ $transmission_daemon ]]; then
 		add-apt-repository -y ppa:transmissionbt/ppa
 		apt-get update
@@ -77,7 +77,8 @@ install () {
 	;;
 	handbrakecli_mac)
 		if [[ $handbrakecli ]]; then
-
+		wget -O HandBrakeCLI.dmg http://sourceforge.net/projects/handbrake/files/0.9.9/HandBrake-0.9.9-MacOSX.6_CLI_x86_64.dmg/download
+		hdiutil attach HandBrakeCLI.dmg 
 		fi
 	;;
 	handbrakecli_linux)
@@ -142,11 +143,28 @@ What is your token for duckdns.org?" >&2
 	;;
 	plexmediaserver_linux)
 		if [[ $pms ]]; then
-		
+		add-apt-repository -y "deb http://www.plexapp.com/repo lucid main"
+		apt-get update
+		apt-get install plexmediaserver
+		ip_address="$(ifconfig | grep "Bcast" | grep "inet" | cut -d ":" -f 2 | cut -d ' ' -f 1)"
+		echo "
+You can now manage your Plex Media Server at the following address:
+
+http://localhost:32400/web/index.html	(from the computer itself)
+http://$ip_address:32400/web/index.html	(from any other computer on the network)
+" >&2
 		fi
 	;;
 	plexhometheater)
 		if [[ $pht ]]; then
+		echo "
+Please understand that running Plex Home Theater on the same machine as the server is NOT recommended. All resources should be given to the server.
+
+Roku sell extremely cheap Plex clients. Roku's Roku 3 is the best solution at around £70/\$100.
+
+Are you certain you wish to install it? [y/n]"
+		read plexht_answer
+		if [[ "$(echo $plexht_answer | cut -c 1)" == "y" || "$(echo $plexht_answer | cut -c 1)" == "Y" ]]; then
 		
 		fi
 	;;
@@ -188,6 +206,11 @@ What is your token for duckdns.org?" >&2
 		apt-get install avahi-daemon
 		fi
 	;;
+	ssh_daemon)
+		if [[ $openssh ]]; then
+		systemsetup -setremotelogin on
+		fi
+	;;
 	esac
 }
 
@@ -211,20 +234,31 @@ if [[ "$OS" == "Mac" ]]; then
 	install filebot_mac
 	install plexmediaserver_mac
 	install duckdns
+	install ssh_daemon
 	echo "
 
-To finish the installation, please go to System Preferences and change the following settings:
-
-Security & Privacy	-->	General	-->	Turn allowed apps to Anywhere (may require unlocking via bottom left corner of System Preferences)
-Sharing --> Remote Login (switch on)
+The installation has finished. Please enjoy your server! Download and watch responsibly!
 
 " >&2
 elif [[ "$OS" == "Linux" ]]; then
 	install handbrakecli_linux
 	install filebot_linux
 	install plexmediaserver_linux
-	install transmission_daemon
+	install transmission_daemon_linux
 	install duckdns
 	install avahi_daemon
 	install openssh_server
+	echo "
+
+The installation has finished. Please enjoy your server! Download and watch responsibly!
+
+You may have to update the permissions of your media directories by running the following commands on them:
+\`sudo chown $username_current:plex -R [YOUR MEDIA DIRECTORY HERE]\`
+\`sudo chmod 770 -R [YOUR MEDIA DIRECTORY HERE]\`
+
+To update and upgrade your system, please run the following command regularly:
+
+\`sudo apt-get update && sudo apt-get -y upgrade\` 
+
+" >&2
 fi

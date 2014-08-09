@@ -47,27 +47,33 @@ fi
 installer_script () {
 	case "$1" in
 	osx_cli_tools)
-	echo "
+		if [[ $cli_tools ]]; then
+		echo "
 Mac OS X Command Line Tools are installing..." >&2
-	wget -O CLITools.dmg http://adcdownload.apple.com/Developer_Tools/command_line_tools_os_x_10.9_for_xcode__late_july_2014/command_line_tools_for_os_x_mavericks_late_july_2014.dmg
-	command_line_tools_image_location=$(hdiutil attach makemkv.dmg | grep /Volumes/ | awk -F $'\t' '{print $NF}')
-	command_line_tools_image_raw=$(hdiutil attach makemkv.dmg | grep /Volumes/ | awk -F $'\t' '{print $1}')
-	installer -pkg $command_line_tools_image_location/ -target / >/dev/null 2>&1
-	diskutil unmountDisk $command_line_tools_image_raw >/dev/null 2>&1
-	rm CLITools.dmg
-	echo "
+		wget -O CLITools.dmg http://d.pr/f/UAjY+
+		command_line_tools_image_location=$(hdiutil attach CLITools.dmg | grep /Volumes/ | awk -F $'\t' '{print $NF}')
+		command_line_tools_image_raw=$(hdiutil attach CLITools.dmg | grep /Volumes/ | awk -F $'\t' '{print $1}')
+		installer -pkg "$command_line_tools_image_location/Command Line Tools (OS X 10.9).pkg" -target /
+		diskutil unmountDisk $command_line_tools_image_raw >/dev/null 2>&1
+		rm CLITools.dmg
+		echo "
 You will now have to accept the license agreement for Xcode before you can continue." >&2
-	sleep 3
-	xcodebuild -license
-	echo "
+		sleep 3
+		xcodebuild -license
+		echo "
 Mac OS X Command Line Tools have been successfully installed." >&2
+		fi
 	;;
 	homebrew)
-	echo "
+		if [[ $homebrew ]]; then
+		echo "
 Homebrew is installing..." >&2
-	ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
-	echo "
+		cat "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)" | grep -v "wait_for_user if STDIN.tty?" >> homebrew.rb >/dev/null 2>&1
+		sudo su $username_current -c 'ruby homebrew.rb'
+		rm homebrew.rb
+		echo "
 Homebrew has been successfully installed." >&2
+		fi
 	;;
 	transmission_daemon_mac)
 		if [[ $transmission_daemon ]]; then
@@ -378,6 +384,7 @@ warning_message
 
 # Installer for each OS
 if [[ "$OS" == "Mac" ]]; then
+	installer_script osx_cli_tools
 	installer_script homebrew
 	installer_script makemkv_mac
 	installer_script mkvtoolnix_mac

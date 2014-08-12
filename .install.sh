@@ -92,7 +92,7 @@ transmission-daemon has been installed successfully.
 transmission-daemon is installing..." >&2
 		add-apt-repository -y ppa:transmissionbt/ppa
 		apt-get update
-		apt-get install transmission-common transmission-daemon transmission-cli
+		apt-get -y install transmission-common transmission-daemon transmission-cli
 		apt-get -f install
 		echo "
 transmission-daemon has been installed successfully.
@@ -113,8 +113,6 @@ MKVtoolnix has been installed successfully" >&2
 		if [[ $mkvtoolnix ]]; then
 		echo "
 MKVtoolnix is installing..." >&2
-		add-apt-repository -y 'deb http://www.bunkus.org/ubuntu/trusty/ ./'
-		add-apt-repository -y 'deb-src http://www.bunkus.org/ubuntu/trusty/ ./'
 		apt-get update
 		apt-get -y install mkvtoolnix
 		echo "
@@ -140,9 +138,8 @@ HandBrakeCLI has been installed successfully.
 		if [[ $handbrakecli ]]; then
 		echo "
 HandBrakeCLI is installing..." >&2
-		add-apt-repository -y ppa:stebbins/handbrake-releases
 		apt-get update
-		apt-get install handbrake-cli
+		apt-get -y install handbrake-cli
 		apt-get -f install
 		echo "
 HandBrakeCLI has been installed successfully.
@@ -153,7 +150,7 @@ HandBrakeCLI has been installed successfully.
 		if [[ $openssh ]]; then
 		echo "
 openssh-server is installing..." >&2
-		apt-get install openssh-server
+		apt-get -y install openssh-server
 		apt-get -f install
 		echo "
 openssh-server has been installed successfully." >&2
@@ -225,9 +222,13 @@ http://$ip_address:32400/web/index.html	(from any other computer on the network)
 		if [[ $pms ]]; then
 		echo "
 Plex Media Server is installing..." >&2
-		add-apt-repository -y "deb http://www.plexapp.com/repo lucid main"
+		add-apt-repository -y "deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main"
+		wget -O plexkey.pub http://plexapp.com/plex_pub_key.pub
+		apt-key add plexkey.pub
+		rm plexkey.pub
 		apt-get update
-		apt-get install plexmediaserver
+		apt-get -y install plexmediaserver
+		apt-get -f install
 		ip_address="$(ifconfig | grep "Bcast" | grep "inet" | cut -d ":" -f 2 | cut -d ' ' -f 1)"
 		echo "
 Plex Media Server has now been installed.

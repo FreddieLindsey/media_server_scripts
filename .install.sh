@@ -90,10 +90,10 @@ transmission-daemon has been installed successfully.
 		if [[ $transmission_daemon ]]; then
 		echo "
 transmission-daemon is installing..." >&2
-		add-apt-repository -y ppa:transmissionbt/ppa >/dev/null 2>&1
-		apt-get update >/dev/null 2>&1
-		apt-get install transmission-common transmission-daemon transmission-cli >/dev/null 2>&1
-		apt-get -f install >/dev/null 2>&1
+		add-apt-repository -y ppa:transmissionbt/ppa
+		apt-get update
+		apt-get install transmission-common transmission-daemon transmission-cli
+		apt-get -f install
 		echo "
 transmission-daemon has been installed successfully.
 		" >&2
@@ -308,13 +308,13 @@ FileBot has been installed successfully.
 		if [[ $filebot ]]; then
 		echo "
 FileBot is installing..." >&2
-		wget -O filebot.html http://www.filebot.net >/dev/null 2>&1
+		wget -O filebot.html http://www.filebot.net
 		filebot_version=$(cat filebot.html | grep deb | awk -F 'amd64' '{print $(NF-1)}' | awk -F '_' '{print $(NF-1)}')
 		rm filebot.html
 		filebot_url="http://sourceforge.net/projects/filebot/files/filebot/FileBot_$filebot_version""/filebot_$filebot_version""_amd64.deb/download"
-		wget -O filebot.deb $filebot_url >/dev/null 2>&1
-		dpkg -i filebot.deb >/dev/null 2>&1
-		apt-get -f -y install >/dev/null 2>&1
+		wget -O filebot.deb $filebot_url
+		dpkg -i filebot.deb
+		apt-get -f -y install
 		rm filebot.deb
 		echo "
 FileBot has been installed successfully.
@@ -353,7 +353,8 @@ MakeMKV has been installed successfully.
 	;;
 	avahi_daemon)
 		if [[ $avahi ]]; then
-		apt-get install avahi-daemon
+		apt-get -y install avahi-daemon
+		apt-get -f install
 		fi
 	;;
 	ssh_daemon)

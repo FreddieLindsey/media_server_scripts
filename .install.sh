@@ -386,7 +386,7 @@ warning_message
 
 # Installer for each OS
 if [[ "$OS" == "Mac" ]]; then
-	installer_script osx_cli_tools
+	# installer_script osx_cli_tools ### Shouldn't need to be installed, as when issuing git, they are already installed.
 	installer_script homebrew
 	installer_script makemkv_mac
 	installer_script mkvtoolnix_mac

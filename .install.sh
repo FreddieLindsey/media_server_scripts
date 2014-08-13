@@ -61,7 +61,7 @@ Homebrew has been successfully installed." >&2
 		if [[ $wget ]]; then
 		echo "
 wget is installing..." >&2
-		sudo su $username_current -c 'brew install wget' >/dev/null 2>&1
+		sudo su $username_current -c 'brew update && brew install wget' >/dev/null 2>&1
 		echo "
 wget has been successfully installed." >&2
 		fi
@@ -70,8 +70,7 @@ wget has been successfully installed." >&2
 		if [[ $transmission_daemon ]]; then
 		echo "
 transmission-daemon is installing..." >&2
-		brew update >/dev/null 2>&1
-		brew install transmission >/dev/null 2>&1
+		sudo su $username_current -c 'brew update && brew install transmission' >/dev/null 2>&1
 		echo "
 transmission-daemon has been installed successfully.
 		" >&2

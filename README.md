@@ -38,7 +38,7 @@ The time comes when we eventually need to update things.
 
 To do this, go into the git directory you originally downloaded, and then issue the following command to update and re-install the code:
 
-	 cd media_server && git pull origin master && cd
+	 cd media_server && git pull origin && cd
 
 Then you can run the install script again:
 

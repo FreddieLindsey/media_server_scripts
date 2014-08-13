@@ -50,7 +50,7 @@ installer_script () {
 		if [[ $homebrew ]]; then
 		echo "
 Homebrew is installing..." >&2
-		cat "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)" | grep -v "wait_for_user if STDIN.tty?" >> homebrew.rb >/dev/null 2>&1
+		cat "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)" | grep -v "wait_for_user if STDIN.tty?" >>homebrew.rb >/dev/null 2>&1
 		sudo su $username_current -c 'ruby homebrew.rb'
 		rm homebrew.rb
 		echo "

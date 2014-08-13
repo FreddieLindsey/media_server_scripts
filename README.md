@@ -30,7 +30,7 @@ To download the latest version of this repository issue the following command:
 
 Once this has completed, go to into the git directory you just downloaded in terminal, and then issue the following command to install the scripts to your system:
 
-	sh install.sh
+	./media_server/install.sh
 
 ## Mac Update
 
@@ -38,7 +38,11 @@ The time comes when we eventually need to update things.
 
 To do this, go into the git directory you originally downloaded, and then issue the following command to update and re-install the code:
 
-	git pull origin master && sh install.sh
+	 cd media_server && git pull origin master && cd
+
+Then you can run the install script again:
+
+	./media_server/install.sh
 
 ## Ubuntu (Desktop) Install
 

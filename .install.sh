@@ -50,7 +50,7 @@ installer_script () {
 		if [[ $homebrew ]]; then
 		echo "
 Homebrew is installing..." >&2
-		cat "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)" | grep -v "wait_for_user if STDIN.tty?" >>homebrew.rb >/dev/null 2>&1
+		curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install | grep -v "wait_for_user if STDIN.tty?" >homebrew.rb 2<&1
 		sudo su $username_current -c 'ruby homebrew.rb'
 		rm homebrew.rb
 		echo "
@@ -105,7 +105,7 @@ MKVtoolnix has been installed successfully" >&2
 		if [[ $handbrakecli ]]; then
 		echo "
 HandBrakeCLI is installing..." >&2
-		curl -o HandBrakeCLI.dmg http://sourceforge.net/projects/handbrake/files/0.9.9/HandBrake-0.9.9-MacOSX.6_CLI_x86_64.dmg/download >/dev/null 2>&1
+		wget -O HandBrakeCLI.dmg http://sourceforge.net/projects/handbrake/files/0.9.9/HandBrake-0.9.9-MacOSX.6_CLI_x86_64.dmg/download >/dev/null 2>&1
 		handbrake_image_location=$(hdiutil attach HandBrakeCLI.dmg | grep /Volumes/ | awk -F $'\t' '{print $NF}')
 		handbrake_image_raw=$(hdiutil attach HandBrakeCLI.dmg | grep /Volumes/ | awk -F $'\t' '{print $1}')
 		cp $handbrake_image_location/HandBrakeCLI /usr/local/bin/
@@ -184,7 +184,7 @@ DuckDNS has not been installed correctly, please seek advice on installation fro
 		echo "
 Plex Media Server is installing..." >&2
 		plexmediaserver_version=0.9.9.14.531-7eef8c6
-		curl -o PlexMediaServer.zip http://downloads.plexapp.com/plex-media-server/$plexmediaserver_version/PlexMediaServer-$plexmediaserver_version-OSX.zip >/dev/null 2>&1
+		wget -O PlexMediaServer.zip http://downloads.plexapp.com/plex-media-server/$plexmediaserver_version/PlexMediaServer-$plexmediaserver_version-OSX.zip >/dev/null 2>&1
 		tar -xvf PlexMediaServer.zip >/dev/null 2>&1
 		rm PlexMediaServer.zip
 		if [[ -e "/Applications/Plex Media Server.app" ]]; then rm -rf /Applications/Plex\ Media\ Server.app; fi
@@ -205,7 +205,7 @@ http://$ip_address:32400/web/index.html	(from any other computer on the network)
 		echo "
 Plex Media Server is installing..." >&2
 		add-apt-repository -y "deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main"
-		curl -o plexkey.pub http://plexapp.com/plex_pub_key.pub
+		wget -O plexkey.pub http://plexapp.com/plex_pub_key.pub
 		apt-key add plexkey.pub
 		rm plexkey.pub
 		apt-get update
@@ -234,7 +234,7 @@ Given this, do you still want to install it? [y/n]"
 		echo "
 Plex Home Theater is installing..." >&2
 		plexhometheater_version="1.2.1.314-7cb0133e"
-		curl -o PlexHomeTheater.zip http://downloads.plexapp.com/plex-home-theater/$plexmediaserver_version/PlexHomeTheater-$plexmediaserver_version-macosx-x86_64.zip >/dev/null 2>&1
+		wget -O PlexHomeTheater.zip http://downloads.plexapp.com/plex-home-theater/$plexmediaserver_version/PlexHomeTheater-$plexmediaserver_version-macosx-x86_64.zip >/dev/null 2>&1
 		tar -xvf PlexHomeTheater.zip >/dev/null 2>&1
 		rm PlexHomeTheater.zip
 		if [[ -e "/Applications/Plex Home Theater.app" ]]; then rm -rf /Applications/Plex\ Home\ Theater.app; fi
@@ -271,11 +271,11 @@ Plex Home Theater has now been installed." >&2
 		if [[ $filebot ]]; then
 		echo "
 FileBot is installing..." >&2
-		curl -o filebot.html http://www.filebot.net >/dev/null 2>&1
+		wget -O filebot.html http://www.filebot.net >/dev/null 2>&1
 		filebot_version=$(cat filebot.html | grep ".app" | awk -F 'type=app' '{print $2}' | awk -F '_' '{print $NF}' | awk -F '.app' '{print $1}' | tail -n 1)
 		rm filebot.html
 		filebot_url="http://sourceforge.net/projects/filebot/files/filebot/FileBot_$filebot_version""/FileBot_$filebot_version"".app.tar.gz/download"
-		curl -o filebot.app.tar.gz $filebot_url >/dev/null 2>&1
+		wget -O filebot.app.tar.gz $filebot_url >/dev/null 2>&1
 		tar -xvf filebot.app.tar.gz >/dev/null 2>&1
 		rm filebot.app.tar.gz
 		if [[ -e "/Applications/FileBot.app" ]]; then rm -rf "/Applications/FileBot.app"; fi
@@ -291,11 +291,11 @@ FileBot has been installed successfully.
 		if [[ $filebot ]]; then
 		echo "
 FileBot is installing..." >&2
-		curl -o filebot.html http://www.filebot.net
+		wget -O filebot.html http://www.filebot.net
 		filebot_version=$(cat filebot.html | grep deb | awk -F 'amd64' '{print $(NF-1)}' | awk -F '_' '{print $(NF-1)}')
 		rm filebot.html
 		filebot_url="http://sourceforge.net/projects/filebot/files/filebot/FileBot_$filebot_version""/filebot_$filebot_version""_amd64.deb/download"
-		curl -o filebot.deb $filebot_url
+		wget -O filebot.deb $filebot_url
 		dpkg -i filebot.deb
 		apt-get -f -y install
 		rm filebot.deb
@@ -309,11 +309,11 @@ FileBot has been installed successfully.
 		echo "
 MakeMKV is installing...
 When prompted, please agree to the license agreement." >&2
-		curl -o makemkv.html http://www.makemkv.com/download >/dev/null 2>&1
+		wget -O makemkv.html http://www.makemkv.com/download >/dev/null 2>&1
 		makemkv_version=$(cat makemkv.html | grep 'MakeMKV v' | awk -F 'MakeMKV v' '{print $2}' | cut -d ' ' -f 1 | head -n 1)
 		rm makemkv.html
 		makemkv_url="http://www.makemkv.com/download/makemkv_v$makemkv_version""_osx.dmg"
-		curl -o makemkv.dmg $makemkv_url >/dev/null 2>&1
+		wget -O makemkv.dmg $makemkv_url >/dev/null 2>&1
 		makemkv_image_location=$(hdiutil attach makemkv.dmg | grep /Volumes/ | awk -F $'\t' '{print $NF}')
 		makemkv_image_raw=$(hdiutil attach makemkv.dmg | grep /Volumes/ | awk -F $'\t' '{print $1}')
 		cp -R $makemkv_image_location/MakeMKV.app /Applications/

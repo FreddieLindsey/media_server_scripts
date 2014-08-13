@@ -57,6 +57,14 @@ Homebrew is installing..." >&2
 Homebrew has been successfully installed." >&2
 		fi
 	;;
+	wget)
+		if [[ $wget ]]; then
+		echo "
+wget is installing..." >&2
+		brew install wget >/dev/null 2>&1
+		echo "
+wget has been successfully installed." >&2
+	;;
 	transmission_daemon_mac)
 		if [[ $transmission_daemon ]]; then
 		echo "

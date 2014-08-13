@@ -61,7 +61,7 @@ Homebrew has been successfully installed." >&2
 		if [[ $wget ]]; then
 		echo "
 wget is installing..." >&2
-		brew install wget >/dev/null 2>&1
+		sudo su $username_current -c 'brew install wget' >/dev/null 2>&1
 		echo "
 wget has been successfully installed." >&2
 		fi

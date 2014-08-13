@@ -378,6 +378,7 @@ warning_message
 # Installer for each OS
 if [[ "$OS" == "Mac" ]]; then
 	installer_script homebrew
+	installer_script wget
 	installer_script makemkv_mac
 	installer_script mkvtoolnix_mac
 	installer_script handbrakecli_mac

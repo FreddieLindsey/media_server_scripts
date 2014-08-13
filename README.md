@@ -10,7 +10,7 @@ Before we start, please just check a few things. You must be able to and know ho
 
 ## Mac Install
 
-Firstly, go to the Mac App Store and download Xcode. You can also do so by clicking ![this link](https://www.google.co.uk/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&uact=8&ved=0CCIQFjAA&url=https%3A%2F%2Fitunes.apple.com%2Fgb%2Fapp%2Fxcode%2Fid497799835%3Fmt%3D12&ei=vKbrU8maIqvQ7AbxuoHQCQ&usg=AFQjCNFzwzu0w6T5iD4Bt9I0B0uByLrOFw) and then clicking on install app.
+Firstly, go to the Mac App Store and download Xcode. You can also do so by clicking this ![link](https%3A%2F%2Fitunes.apple.com%2Fgb%2Fapp%2Fxcode%2Fid497799835%3Fmt%3D12&ei=vKbrU8maIqvQ7AbxuoHQCQ&usg=AFQjCNFzwzu0w6T5iD4Bt9I0B0uByLrOFw) and then clicking on install app.
 
 Once Xcode has been downloaded, you can open your terminal to install the command line tools we'll need for the script by running the following command:
 

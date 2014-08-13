@@ -64,6 +64,7 @@ wget is installing..." >&2
 		brew install wget >/dev/null 2>&1
 		echo "
 wget has been successfully installed." >&2
+		fi
 	;;
 	transmission_daemon_mac)
 		if [[ $transmission_daemon ]]; then

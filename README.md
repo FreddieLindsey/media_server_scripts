@@ -18,6 +18,10 @@ Once Xcode has been downloaded, you can open your terminal to install the comman
 
 Follow the instructions and before you know it they should be installed too!
 
+Finally, it's import to accept the license agreements for Xcode. To do this, open Xcode and accept them, or run this command and follow the instructions:
+
+	sudo xcodebuild -license
+
 Now you're ready to get going!
 
 To download the latest version of this repository issue the following command:

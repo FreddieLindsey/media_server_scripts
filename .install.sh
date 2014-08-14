@@ -49,70 +49,82 @@ installer_script () {
 	homebrew)
 		if [[ $homebrew ]]; then
 		echo "
-Homebrew is installing..." >&2
+		Homebrew is installing..." >&2
 		curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install | grep -v "wait_for_user if STDIN.tty?" >homebrew.rb
 		sudo su $username_current -c 'ruby homebrew.rb' >/dev/null 2>&1
 		rm homebrew.rb
 		echo "
-Homebrew has been successfully installed." >&2
+		Homebrew has been successfully installed." >&2
 		fi
 	;;
 	wget)
 		if [[ $wget ]]; then
 		echo "
-wget is installing..." >&2
+		wget is installing..." >&2
 		sudo su $username_current -c 'brew update && brew install wget' >/dev/null 2>&1
 		echo "
-wget has been successfully installed." >&2
+		wget has been successfully installed." >&2
+		fi
+	;;
+	jre)
+		if [[ $java ]]; then
+		echo "
+		Java Runtime Environment is installing..." >&2
+		java_image_location=$(hdiutil attach "$script_directory/.software/runtime_environment.dmg" | grep /Volumes/ | awk -F $'\t' '{print $NF}')
+		java_image_raw=$(hdiutil attach "$script_directory/.software/runtime_environment.dmg" | grep /Volumes/ | awk -F $'\t' '{print $1}')
+		installer -pkg "$java_image_location"/*.pkg -target /
+		diskutil unmountDisk $java_image_raw >/dev/null 2>&1
+		echo "
+		Java Runtime Environment has been successfully installed." >&2
 		fi
 	;;
 	transmission_daemon_mac)
 		if [[ $transmission_daemon ]]; then
 		echo "
-transmission-daemon is installing..." >&2
+		transmission-daemon is installing..." >&2
 		sudo su $username_current -c 'brew update && brew install transmission' >/dev/null 2>&1
 		echo "
-transmission-daemon has been installed successfully.
+		transmission-daemon has been installed successfully.
 		" >&2
 		fi
 	;;
 	transmission_daemon_linux)
 		if [[ $transmission_daemon ]]; then
 		echo "
-transmission-daemon is installing..." >&2
+		transmission-daemon is installing..." >&2
 		add-apt-repository -y ppa:transmissionbt/ppa
 		apt-get update
 		apt-get -y install transmission-common transmission-daemon transmission-cli
 		apt-get -f install
 		echo "
-transmission-daemon has been installed successfully.
+		transmission-daemon has been installed successfully.
 		" >&2
 		fi
 	;;
 	mkvtoolnix_mac)
 		if [[ $mkvtoolnix ]]; then
 		echo "
-MKVtoolnix is installing..." >&2
+		MKVtoolnix is installing..." >&2
 		brew update >/dev/null 2>&1
 		brew install mkvtoolnix >/dev/null 2>&1
 		echo "
-MKVtoolnix has been installed successfully" >&2
+		MKVtoolnix has been installed successfully" >&2
 		fi
 	;;
 	mkvtoolnix_linux)
 		if [[ $mkvtoolnix ]]; then
 		echo "
-MKVtoolnix is installing..." >&2
+		MKVtoolnix is installing..." >&2
 		apt-get update
 		apt-get -y install mkvtoolnix
 		echo "
-MKVtoolnix has been installed successfully" >&2
+		MKVtoolnix has been installed successfully" >&2
 		fi
 	;;
 	handbrakecli_mac)
 		if [[ $handbrakecli ]]; then
 		echo "
-HandBrakeCLI is installing..." >&2
+		HandBrakeCLI is installing..." >&2
 		wget -O HandBrakeCLI.dmg http://sourceforge.net/projects/handbrake/files/0.9.9/HandBrake-0.9.9-MacOSX.6_CLI_x86_64.dmg/download >/dev/null 2>&1
 		handbrake_image_location=$(hdiutil attach HandBrakeCLI.dmg | grep /Volumes/ | awk -F $'\t' '{print $NF}')
 		handbrake_image_raw=$(hdiutil attach HandBrakeCLI.dmg | grep /Volumes/ | awk -F $'\t' '{print $1}')
@@ -120,36 +132,36 @@ HandBrakeCLI is installing..." >&2
 		diskutil unmountDisk $handbrake_image_raw >/dev/null 2>&1
 		rm HandBrakeCLI.dmg
 		echo "
-HandBrakeCLI has been installed successfully.
+		HandBrakeCLI has been installed successfully.
 		" >&2
 		fi
 	;;
 	handbrakecli_linux)
 		if [[ $handbrakecli ]]; then
 		echo "
-HandBrakeCLI is installing..." >&2
+		HandBrakeCLI is installing..." >&2
 		apt-get update
 		apt-get -y install handbrake-cli
 		apt-get -f install
 		echo "
-HandBrakeCLI has been installed successfully.
+		HandBrakeCLI has been installed successfully.
 		" >&2
 		fi
 	;;
 	openssh_server)
 		if [[ $openssh ]]; then
 		echo "
-openssh-server is installing..." >&2
+		openssh-server is installing..." >&2
 		apt-get -y install openssh-server
 		apt-get -f install
 		echo "
-openssh-server has been installed successfully." >&2
+		openssh-server has been installed successfully." >&2
 		fi
 	;;
 	duckdns)
 		if [[ $duckdns ]]; then
 		echo "
-DuckDNS is installing..." >&2
+		DuckDNS is installing..." >&2
 		echo "
 Do you have a dynamic address for duckdns.org? [y/n]" >&2
 		read answer
@@ -181,8 +193,8 @@ What is your token for duckdns.org?" >&2
 			fi
 			/usr/local/bin/duckdns/duck.sh >/dev/null 2>&1
 			if [[ "$(cat /usr/local/bin/duckdns/duck.log)" == "OK" ]]; then echo "
-DuckDNS installed successfully. Please continue." >&2; else echo "
-DuckDNS has not been installed correctly, please seek advice on installation from https://www.duckdns.org" >&2; fi
+		DuckDNS installed successfully. Please continue." >&2; else echo "
+		DuckDNS has not been installed correctly, please seek advice on installation from https://www.duckdns.org" >&2; fi
 		fi
 		
 		fi
@@ -190,7 +202,7 @@ DuckDNS has not been installed correctly, please seek advice on installation fro
 	plexmediaserver_mac)
 		if [[ $pms ]]; then
 		echo "
-Plex Media Server is installing..." >&2
+		Plex Media Server is installing..." >&2
 		plexmediaserver_version=0.9.9.14.531-7eef8c6
 		wget -O PlexMediaServer.zip http://downloads.plexapp.com/plex-media-server/$plexmediaserver_version/PlexMediaServer-$plexmediaserver_version-OSX.zip >/dev/null 2>&1
 		tar -xvf PlexMediaServer.zip >/dev/null 2>&1
@@ -199,6 +211,7 @@ Plex Media Server is installing..." >&2
 		mv Plex\ Media\ Server.app /Applications/Plex\ Media\ Server.app >/dev/null 2>&1
 		sudo spctl --add --label "Plex_Media_Server" /Applications/Plex\ Media\ Server.app
 		sudo spctl --enable --label "Plex_Media_Server"
+		ip_address="$(ifconfig | grep "inet" | grep -v "127.0.0.1\|inet6" | head -n 1 | cut -d ' ' -f 2)"
 		echo "
 Plex Media Server has now been installed. Double-click on it in your Applications folder to start the server.
 You can now manage your Plex Media Server at the following address:
@@ -325,7 +338,7 @@ When prompted, please agree to the license agreement." >&2
 		makemkv_image_location=$(hdiutil attach makemkv.dmg | grep /Volumes/ | awk -F $'\t' '{print $NF}')
 		makemkv_image_raw=$(hdiutil attach makemkv.dmg | grep /Volumes/ | awk -F $'\t' '{print $1}')
 		cp -R $makemkv_image_location/MakeMKV.app /Applications/
-		installer -pkg $makemkv_image_location/daspi* -target / >/dev/null 2>&1
+		installer -pkg "$makemkv_image_location"/daspi* -target / >/dev/null 2>&1
 		diskutil unmountDisk $makemkv_image_raw >/dev/null 2>&1
 		rm makemkv.dmg
 		echo "
@@ -382,6 +395,7 @@ if [[ "$OS" == "Mac" ]]; then
 	installer_script mkvtoolnix_mac
 	installer_script handbrakecli_mac
 	installer_script filebot_mac
+	installer_script java_runtime_environment
 	installer_script plexmediaserver_mac
 	installer_script plexhometheater_mac
 	installer_script transmission_daemon_mac

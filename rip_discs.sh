@@ -76,6 +76,7 @@ makemkv_rip () {
 	filebot_command="$filebot -rename -non-strict --conflict override --db themoviedb --format "
 	filebot_format="$filebot_format_ripped_disc"
 	final_output="$transcoding_movie_loc"
+	nohup "$script/.ripping.sh \"$makemkv_command\" \"$filebot_command\" \"$filebot_format\" \"$final_output\""
 }
 
 # Checks if makemkvcon is already running, and if so cancels the script

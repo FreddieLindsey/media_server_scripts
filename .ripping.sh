@@ -26,7 +26,9 @@ biggest_file_path="$1/$biggest_file_name"
 ##
 
 # Rip disc and eject
-eval "$makemkv_command \"$output_directory\""
+if [[ ! -d "$output_directory" ]]; then mkdir "$output_directory"; fi
+ripping_command="$makemkv_command \"$output_directory\""
+eval $ripping_command
 sleep 5
 drutil eject
 
@@ -38,4 +40,5 @@ mv "$biggest_file_path" "$output_directory.$biggest_file_ext"
 rm -rf "$output_directory"
 
 # Rename biggest file with filebot
+echo "$filebot_command \"$filebot_format\" \"$output_directory.$biggest_file_ext\"" >&2
 eval "$filebot_command \"$filebot_format\" \"$output_directory.$biggest_file_ext\"" 

@@ -65,6 +65,9 @@ makemkv_rip () {
 		filebot="filebot"
 	fi
 	
+	if [[ ! -d "$ripping_loc" ]]; then
+		mkdir "$ripping_loc"
+	fi
 	if [[ -d "$ripping_loc/$1" ]]; then
 		rm -rf "$ripping_loc/$1"
 		mkdir "$ripping_loc/$1"
@@ -75,8 +78,9 @@ makemkv_rip () {
 	makemkv_command="$makemkvcon mkv disc:0 all --minlength=3600"
 	filebot_command="$filebot -rename -non-strict --conflict override --db themoviedb --format "
 	filebot_format="$filebot_format_ripped_disc"
-	final_output="$transcoding_movie_loc"
-	nohup "$script/.ripping.sh \"$makemkv_command\" \"$filebot_command\" \"$filebot_format\" \"$final_output\""
+	final_output="$transcoding_movie_loc/$name_of_file"
+	nohup_command="$script_directory/.ripping.sh \"$makemkv_command\" \"$filebot_command\" \"$filebot_format\" \"$final_output\""
+	nohup $nohup_command
 }
 
 # Checks if makemkvcon is already running, and if so cancels the script

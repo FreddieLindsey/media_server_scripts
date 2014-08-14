@@ -46,41 +46,31 @@ fi
 # Installer script for each program
 installer_script () {
 	case "$1" in
-	osx_cli_tools)
-		if [[ $cli_tools ]]; then
-		echo "
-Mac OS X Command Line Tools are installing..." >&2
-		wget -O CLITools.dmg http://d.pr/f/UAjY+
-		command_line_tools_image_location=$(hdiutil attach CLITools.dmg | grep /Volumes/ | awk -F $'\t' '{print $NF}')
-		command_line_tools_image_raw=$(hdiutil attach CLITools.dmg | grep /Volumes/ | awk -F $'\t' '{print $1}')
-		installer -pkg "$command_line_tools_image_location/Command Line Tools (OS X 10.9).pkg" -target /
-		diskutil unmountDisk $command_line_tools_image_raw >/dev/null 2>&1
-		rm CLITools.dmg
-		echo "
-You will now have to accept the license agreement for Xcode before you can continue." >&2
-		sleep 3
-		xcodebuild -license
-		echo "
-Mac OS X Command Line Tools have been successfully installed." >&2
-		fi
-	;;
 	homebrew)
 		if [[ $homebrew ]]; then
 		echo "
 Homebrew is installing..." >&2
-		cat "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)" | grep -v "wait_for_user if STDIN.tty?" >> homebrew.rb >/dev/null 2>&1
-		sudo su $username_current -c 'ruby homebrew.rb'
+		curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install | grep -v "wait_for_user if STDIN.tty?" >homebrew.rb
+		sudo su $username_current -c 'ruby homebrew.rb' >/dev/null 2>&1
 		rm homebrew.rb
 		echo "
 Homebrew has been successfully installed." >&2
+		fi
+	;;
+	wget)
+		if [[ $wget ]]; then
+		echo "
+wget is installing..." >&2
+		sudo su $username_current -c 'brew update && brew install wget' >/dev/null 2>&1
+		echo "
+wget has been successfully installed." >&2
 		fi
 	;;
 	transmission_daemon_mac)
 		if [[ $transmission_daemon ]]; then
 		echo "
 transmission-daemon is installing..." >&2
-		brew update >/dev/null 2>&1
-		brew install transmission >/dev/null 2>&1
+		sudo su $username_current -c 'brew update && brew install transmission' >/dev/null 2>&1
 		echo "
 transmission-daemon has been installed successfully.
 		" >&2
@@ -90,10 +80,10 @@ transmission-daemon has been installed successfully.
 		if [[ $transmission_daemon ]]; then
 		echo "
 transmission-daemon is installing..." >&2
-		add-apt-repository -y ppa:transmissionbt/ppa >/dev/null 2>&1
-		apt-get update >/dev/null 2>&1
-		apt-get install transmission-common transmission-daemon transmission-cli >/dev/null 2>&1
-		apt-get -f install >/dev/null 2>&1
+		add-apt-repository -y ppa:transmissionbt/ppa
+		apt-get update
+		apt-get -y install transmission-common transmission-daemon transmission-cli
+		apt-get -f install
 		echo "
 transmission-daemon has been installed successfully.
 		" >&2
@@ -113,8 +103,6 @@ MKVtoolnix has been installed successfully" >&2
 		if [[ $mkvtoolnix ]]; then
 		echo "
 MKVtoolnix is installing..." >&2
-		add-apt-repository -y 'deb http://www.bunkus.org/ubuntu/trusty/ ./'
-		add-apt-repository -y 'deb-src http://www.bunkus.org/ubuntu/trusty/ ./'
 		apt-get update
 		apt-get -y install mkvtoolnix
 		echo "
@@ -140,9 +128,8 @@ HandBrakeCLI has been installed successfully.
 		if [[ $handbrakecli ]]; then
 		echo "
 HandBrakeCLI is installing..." >&2
-		add-apt-repository -y ppa:stebbins/handbrake-releases
 		apt-get update
-		apt-get install handbrake-cli
+		apt-get -y install handbrake-cli
 		apt-get -f install
 		echo "
 HandBrakeCLI has been installed successfully.
@@ -153,7 +140,7 @@ HandBrakeCLI has been installed successfully.
 		if [[ $openssh ]]; then
 		echo "
 openssh-server is installing..." >&2
-		apt-get install openssh-server
+		apt-get -y install openssh-server
 		apt-get -f install
 		echo "
 openssh-server has been installed successfully." >&2
@@ -225,9 +212,13 @@ http://$ip_address:32400/web/index.html	(from any other computer on the network)
 		if [[ $pms ]]; then
 		echo "
 Plex Media Server is installing..." >&2
-		add-apt-repository -y "deb http://www.plexapp.com/repo lucid main"
+		add-apt-repository -y "deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main"
+		wget -O plexkey.pub http://plexapp.com/plex_pub_key.pub
+		apt-key add plexkey.pub
+		rm plexkey.pub
 		apt-get update
-		apt-get install plexmediaserver
+		apt-get -y install plexmediaserver
+		apt-get -f install
 		ip_address="$(ifconfig | grep "Bcast" | grep "inet" | cut -d ":" -f 2 | cut -d ' ' -f 1)"
 		echo "
 Plex Media Server has now been installed.
@@ -308,13 +299,13 @@ FileBot has been installed successfully.
 		if [[ $filebot ]]; then
 		echo "
 FileBot is installing..." >&2
-		wget -O filebot.html http://www.filebot.net >/dev/null 2>&1
+		wget -O filebot.html http://www.filebot.net
 		filebot_version=$(cat filebot.html | grep deb | awk -F 'amd64' '{print $(NF-1)}' | awk -F '_' '{print $(NF-1)}')
 		rm filebot.html
 		filebot_url="http://sourceforge.net/projects/filebot/files/filebot/FileBot_$filebot_version""/filebot_$filebot_version""_amd64.deb/download"
-		wget -O filebot.deb $filebot_url >/dev/null 2>&1
-		dpkg -i filebot.deb >/dev/null 2>&1
-		apt-get -f -y install >/dev/null 2>&1
+		wget -O filebot.deb $filebot_url
+		dpkg -i filebot.deb
+		apt-get -f -y install
 		rm filebot.deb
 		echo "
 FileBot has been installed successfully.
@@ -353,7 +344,8 @@ MakeMKV has been installed successfully.
 	;;
 	avahi_daemon)
 		if [[ $avahi ]]; then
-		apt-get install avahi-daemon
+		apt-get -y install avahi-daemon
+		apt-get -f install
 		fi
 	;;
 	ssh_daemon)
@@ -384,8 +376,8 @@ warning_message
 
 # Installer for each OS
 if [[ "$OS" == "Mac" ]]; then
-	installer_script osx_cli_tools
 	installer_script homebrew
+	installer_script wget
 	installer_script makemkv_mac
 	installer_script mkvtoolnix_mac
 	installer_script handbrakecli_mac

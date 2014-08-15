@@ -371,37 +371,31 @@ When prompted, please agree to the license agreement." >&2
 		if [[ $makemkv ]]; then
 		echo "
 		MakeMKV is installing..." >&2
+		echo "
+Installing dependencies..." >&2
 		apt-get -y install build-essential pkg-config libc6-dev libssl-dev libexpat1-dev libavcodec-dev libgl1-mesa-dev libqt4-dev >/dev/null 2>&1
 		wget -O makemkv.html http://www.makemkv.com/download >/dev/null 2>&1
 		makemkv_version=$(cat makemkv.html | grep 'MakeMKV v' | awk -F 'MakeMKV v' '{print $2}' | cut -d ' ' -f 1 | head -n 1)
 		rm makemkv.html
+		echo "
+Downloading MakeMKV..." >&2
 		wget -O makemkv-bin.tar.gz http://www.makemkv.com/download/makemkv-bin-$makemkv_version.tar.gz >/dev/null 2>&1
 		wget -O makemkv-oss.tar.gz http://www.makemkv.com/download/makemkv-oss-$makemkv_version.tar.gz >/dev/null 2>&1
+		echo "
+Opening MakeMKV source..." >&2
 		tar -xf makemkv-bin.tar.gz >/dev/null 2>&1
 		tar -xf makemkv-oss.tar.gz >/dev/null 2>&1
 		rm makemkv-bin.tar.gz >/dev/null 2>&1
 		rm makemkv-oss.tar.gz >/dev/null 2>&1
+		echo "
+Installing MakeMKV OSS..." >&2
 		cd makemkv-oss-$makemkv_version
 		./configure >/dev/null 2>&1
-		echo "
-		
-		
-		make
-		
-		
-		
-		" >&2
 		make
 		sudo make install >/dev/null 2>&1
-		cd ../makemkv-bin-$makemkv_version
 		echo "
-		
-		
-		make2
-		
-		
-		
-		" >&2
+Installing MakeMKV Bin..." >&2
+		cd ../makemkv-bin-$makemkv_version
 		make
 		sudo make install >/dev/null 2>&1
 		echo "

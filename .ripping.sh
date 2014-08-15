@@ -31,7 +31,7 @@ ripping_command="$makemkv_command \"$output_directory\""
 echo "$ripping_command"
 eval "$ripping_command"
 sleep 5
-drutil eject
+# drutil eject
 
 # Get biggest file from folder
 biggest_file "$output_directory"

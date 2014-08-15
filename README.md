@@ -12,11 +12,17 @@ Before we start, please just check a few things. You must be able to and know ho
 
 Firstly, go to the Mac App Store and download Xcode. You can also do so by clicking [this link](https://itunes.apple.com/gb/app/xcode/id497799835?mt=12) and then clicking on install app.
 
+![](https://raw.githubusercontent.com/FreddieShoreditch/media_server/development/.images/Screen%20Shot%202014-08-13%20at%2018.48.23.png)
+
 Once Xcode has been downloaded, you can open your terminal to install the command line tools we'll need for the script by running the following command:
 
 	xcode-select --install
 
+![](https://raw.githubusercontent.com/FreddieShoreditch/media_server/development/.images/Screen%20Shot%202014-08-13%20at%2019.17.19.png)
+
 Follow the instructions and before you know it they should be installed too!
+
+![](https://raw.githubusercontent.com/FreddieShoreditch/media_server/development/.images/Screen%20Shot%202014-08-13%20at%2019.17.52.png)
 
 Finally, it's import to accept the license agreements for Xcode. To do this, open Xcode and accept them, or run this command and follow the instructions:
 

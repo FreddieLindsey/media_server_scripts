@@ -79,6 +79,13 @@ makemkv_rip () {
 	filebot_command="$filebot -rename -non-strict --conflict override --db themoviedb --format "
 	filebot_format="$filebot_format_ripped_disc"
 	final_output="$transcoding_movie_loc/$name_of_file"
+	echo "
+	
+Will now send the following command to nohup:
+
+$script_directory/.ripping.sh \"$makemkv_command\" \"$filebot_command\" \"$filebot_format\" \"$final_output\"
+" >&2
+	
 	nohup_command="$script_directory/.ripping.sh \"$makemkv_command\" \"$filebot_command\" \"$filebot_format\" \"$final_output\""
 	nohup $nohup_command
 }

@@ -115,7 +115,8 @@ installer_script () {
 		brew update >/dev/null 2>&1
 		brew install mkvtoolnix >/dev/null 2>&1
 		echo "
-		MKVtoolnix has been installed successfully" >&2
+		MKVtoolnix has been installed successfully
+		" >&2
 		fi
 	;;
 	mkvtoolnix_linux)
@@ -125,7 +126,8 @@ installer_script () {
 		apt-get update >/dev/null 2>&1
 		apt-get -y install mkvtoolnix >/dev/null 2>&1
 		echo "
-		MKVtoolnix has been installed successfully" >&2
+		MKVtoolnix has been installed successfully
+		" >&2
 		fi
 	;;
 	handbrakecli_mac)
@@ -237,11 +239,11 @@ http://$ip_address:32400/web/index.html	(from any other computer on the network)
 		echo "
 		Plex Media Server is installing..." >&2
 		add-apt-repository -y "deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main"
-		wget -O plex_pub_key.pub http://plexapp.com/plex_pub_key.pub
-		apt-key add plex_pub_key.pub
-		rm plexkey.pub
-		apt-get update
-		apt-get -y install plexmediaserver
+		# wget -O plex_pub_key.pub http://plexapp.com/plex_pub_key.pub
+		# apt-key add plex_pub_key.pub
+		# rm plex_pub_key.pub
+		apt-get update >/dev/null 2>&1
+		apt-get -y install plexmediaserver --force-yes # Currently can't get key, so must use force yes command
 		apt-get -f install
 		ip_address="$(ifconfig | grep "Bcast" | grep "inet" | cut -d ":" -f 2 | cut -d ' ' -f 1)"
 		echo "

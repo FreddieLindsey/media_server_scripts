@@ -26,11 +26,11 @@ Now you're ready to get going!
 
 To download the latest version of this repository issue the following command:
 
-	git clone http://www.github.com/FreddieShoreditch/media_server.git
+	git clone -b release http://www.github.com/FreddieShoreditch/media_server.git /usr/local/media_server
 
 Once this has completed, go to into the git directory you just downloaded in terminal, and then issue the following command to install the scripts to your system:
 
-	./media_server/install.sh
+	/usr/local/media_server/install.sh
 
 ## Mac Update
 
@@ -38,11 +38,11 @@ The time comes when we eventually need to update things.
 
 To do this, go into the git directory you originally downloaded, and then issue the following command to update and re-install the code:
 
-	 cd media_server && git pull origin && cd
+	 cd /usr/local/media_server && git pull origin && cd
 
 Then you can run the install script again:
 
-	./media_server/install.sh
+	/usr/local/media_server/install.sh
 
 ## Ubuntu (Desktop) Install
 

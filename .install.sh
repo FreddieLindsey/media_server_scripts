@@ -44,10 +44,11 @@ fi
 }
 
 # Symlink to ripping and transcoding scripts
-ln -s "$script_directory/rip_discs.sh" /usr/local/bin/discripper
-ln -s "$script_directory/plextranscoder.sh" /usr/local/bin/plext
-ln -s "$script_directory/transmission_finish.sh" /usr/local/bin/transmissionf
-
+symlinks () {
+ln -s "/usr/local/media_server/rip_discs.sh" /usr/local/bin/discripper
+ln -s "/usr/local/media_server/plextranscoder.sh" /usr/local/bin/plext
+ln -s "/usr/local/media_server/transmission_finish.sh" /usr/local/bin/transmissionf
+}
 
 # Installer script for each program
 installer_script () {
@@ -404,6 +405,9 @@ check_os
 
 # Warns the user of any issues, known constraints of using their OS
 warning_message
+
+# Symlinks the scripts to the /usr/local/bin directory
+symlinks
 
 # Installer for each OS
 if [[ "$OS" == "Mac" ]]; then

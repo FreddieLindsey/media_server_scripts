@@ -122,8 +122,8 @@ installer_script () {
 		if [[ $mkvtoolnix ]]; then
 		echo "
 		MKVtoolnix is installing..." >&2
-		apt-get update
-		apt-get -y install mkvtoolnix
+		apt-get update >/dev/null 2>&1
+		apt-get -y install mkvtoolnix >/dev/null 2>&1
 		echo "
 		MKVtoolnix has been installed successfully" >&2
 		fi
@@ -147,9 +147,9 @@ installer_script () {
 		if [[ $handbrakecli ]]; then
 		echo "
 		HandBrakeCLI is installing..." >&2
-		apt-get update
-		apt-get -y install handbrake-cli
-		apt-get -f install
+		apt-get update >/dev/null 2>&1
+		apt-get -y install handbrake-cli >/dev/null 2>&1
+		apt-get -f install >/dev/null 2>&1
 		echo "
 		HandBrakeCLI has been installed successfully.
 		" >&2

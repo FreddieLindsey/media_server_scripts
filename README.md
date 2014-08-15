@@ -52,4 +52,18 @@ Then you can run the install script again:
 
 ## Ubuntu (Desktop) Install
 
+Firstly, go into terminal and type in the following command to ensure you have `git` installed:
+
+	sudo apt-get -y install git
+
+Secondly, create a directory and clone this repository, then install:
+
+	sudo mkdir /usr/local/media_server	# First time only!
+
+	sudo chown [YOUR USERNAME] /usr/local/media_server
+
+	git clone -b release https://www.github.com/FreddieShoreditch/media_server.git /usr/local/media_server
+
+	/usr/local/media_server/install.sh
+
 ## Ubuntu (Server) Install

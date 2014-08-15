@@ -159,8 +159,8 @@ installer_script () {
 		if [[ $openssh ]]; then
 		echo "
 		openssh-server is installing..." >&2
-		apt-get -y install openssh-server
-		apt-get -f install
+		apt-get -y install openssh-server >/dev/null 2>&1
+		apt-get -f install >/dev/null 2>&1
 		echo "
 		openssh-server has been installed successfully." >&2
 		fi
@@ -298,10 +298,10 @@ Given this, do you still want to install it? [y/n]"
 		if [[ "$(echo $plexht_answer | cut -c 1)" == "y" || "$(echo $plexht_answer | cut -c 1)" == "Y" ]]; then
 		echo "
 		Plex Home Theater is installing..." >&2
-		add-apt-repository -y ppa:plexapp/plexht
-		add-apt-repository -y ppa:pulse-eight/libcec
-		apt-get update
-		apt-get -y install plexhometheater
+		add-apt-repository -y ppa:plexapp/plexht >/dev/null 2>&1
+		add-apt-repository -y ppa:pulse-eight/libcec >/dev/null 2>&1
+		apt-get update >/dev/null 2>&1
+		apt-get -y install plexhometheater >/dev/null 2>&1
 		echo "
 		Plex Home Theater has now been installed." >&2
 		fi
@@ -376,8 +376,8 @@ When prompted, please agree to the license agreement." >&2
 	;;
 	avahi_daemon)
 		if [[ $avahi ]]; then
-		apt-get -y install avahi-daemon
-		apt-get -f install
+		apt-get -y install avahi-daemon >/dev/null 2>&1
+		apt-get -f install >/dev/null 2>&1
 		fi
 	;;
 	ssh_daemon)

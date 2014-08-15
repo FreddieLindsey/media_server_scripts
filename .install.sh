@@ -45,9 +45,9 @@ fi
 
 # Symlink to ripping and transcoding scripts
 symlinks () {
-ln -s "/usr/local/media_server/rip_discs.sh" /usr/local/bin/discripper
-ln -s "/usr/local/media_server/plextranscoder.sh" /usr/local/bin/plext
-ln -s "/usr/local/media_server/transmission_finish.sh" /usr/local/bin/transmissionf
+ln -sf "/usr/local/media_server/rip_discs.sh" /usr/local/bin/discripper
+ln -sf "/usr/local/media_server/plextranscoder.sh" /usr/local/bin/plext
+ln -sf "/usr/local/media_server/transmission_finish.sh" /usr/local/bin/transmissionf
 }
 
 # Installer script for each program

@@ -99,10 +99,10 @@ installer_script () {
 		if [[ $transmission_daemon ]]; then
 		echo "
 		transmission-daemon is installing..." >&2
-		add-apt-repository -y ppa:transmissionbt/ppa
-		apt-get update
-		apt-get -y install transmission-common transmission-daemon transmission-cli
-		apt-get -f install
+		add-apt-repository -y ppa:transmissionbt/ppa >/dev/null 2>&1
+		apt-get update >/dev/null 2>&1
+		apt-get -y install transmission-common transmission-daemon transmission-cli >/dev/null 2>&1
+		apt-get -f install >/dev/null 2>&1
 		echo "
 		transmission-daemon has been installed successfully.
 		" >&2
@@ -237,8 +237,8 @@ http://$ip_address:32400/web/index.html	(from any other computer on the network)
 		echo "
 		Plex Media Server is installing..." >&2
 		add-apt-repository -y "deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main"
-		wget -O plexkey.pub http://plexapp.com/plex_pub_key.pub
-		apt-key add plexkey.pub
+		wget -O plex_pub_key.pub http://plexapp.com/plex_pub_key.pub
+		apt-key add plex_pub_key.pub
 		rm plexkey.pub
 		apt-get update
 		apt-get -y install plexmediaserver

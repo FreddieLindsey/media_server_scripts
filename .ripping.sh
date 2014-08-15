@@ -28,7 +28,8 @@ biggest_file_path="$1/$biggest_file_name"
 # Rip disc and eject
 if [[ ! -d "$output_directory" ]]; then mkdir "$output_directory"; fi
 ripping_command="$makemkv_command \"$output_directory\""
-eval $ripping_command
+echo "$ripping_command"
+eval "$ripping_command"
 sleep 5
 drutil eject
 

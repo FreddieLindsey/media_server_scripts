@@ -219,18 +219,22 @@ What is your token for duckdns.org?" >&2
 		sudo spctl --enable --label "Plex_Media_Server"
 		ip_address="$(ifconfig | grep "inet" | grep -v "127.0.0.1\|inet6" | head -n 1 | cut -d ' ' -f 2)"
 		echo "
-Plex Media Server has now been installed. Double-click on it in your Applications folder to start the server.
+		Plex Media Server has now been installed. Double-click on it in your Applications folder to start the server.
+		
+		
 You can now manage your Plex Media Server at the following address:
 
 http://localhost:32400/web/index.html	(from the computer itself)
 http://$ip_address:32400/web/index.html	(from any other computer on the network)
+
+
 " >&2
 		fi
 	;;
 	plexmediaserver_linux)
 		if [[ $pms ]]; then
 		echo "
-Plex Media Server is installing..." >&2
+		Plex Media Server is installing..." >&2
 		add-apt-repository -y "deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main"
 		wget -O plexkey.pub http://plexapp.com/plex_pub_key.pub
 		apt-key add plexkey.pub
@@ -240,17 +244,23 @@ Plex Media Server is installing..." >&2
 		apt-get -f install
 		ip_address="$(ifconfig | grep "Bcast" | grep "inet" | cut -d ":" -f 2 | cut -d ' ' -f 1)"
 		echo "
-Plex Media Server has now been installed.
+		Plex Media Server has now been installed.
+		
+		
 You can now manage your Plex Media Server at the following address:
 
 http://localhost:32400/web/index.html	(from the computer itself)
 http://$ip_address:32400/web/index.html	(from any other computer on the network)
+
+
 " >&2
 		fi
 	;;
 	plexhometheater_mac)
 		if [[ $pht ]]; then
 		echo "
+		
+		
 Please understand that running Plex Home Theater on the same machine as the server is NOT recommended. All resources should be given to the server.
 
 Roku sell extremely cheap Plex clients. Roku's Roku 3 is the best solution at around £70/\$100.
@@ -259,7 +269,7 @@ Given this, do you still want to install it? [y/n]"
 		read plexht_answer
 		if [[ "$(echo $plexht_answer | cut -c 1)" == "y" || "$(echo $plexht_answer | cut -c 1)" == "Y" ]]; then
 		echo "
-Plex Home Theater is installing..." >&2
+		Plex Home Theater is installing..." >&2
 		plexhometheater_version="1.2.1.314-7cb0133e"
 		wget -O PlexHomeTheater.zip http://downloads.plexapp.com/plex-home-theater/$plexmediaserver_version/PlexHomeTheater-$plexmediaserver_version-macosx-x86_64.zip >/dev/null 2>&1
 		tar -xvf PlexHomeTheater.zip >/dev/null 2>&1
@@ -269,13 +279,15 @@ Plex Home Theater is installing..." >&2
 		sudo spctl --add --label "Plex_Home_Theater" /Applications/Plex\ Home\ Theater.app
 		sudo spctl --enable --label "Plex_Home_Theater"
 		echo "
-Plex Home Theater has now been installed." >&2
+		Plex Home Theater has now been installed." >&2
 		fi
 		fi
 	;;
 	plexhometheater_linux)
 		if [[ $pht ]]; then
 		echo "
+		
+		
 Please understand that running Plex Home Theater on the same machine as the server is NOT recommended. All resources should be given to the server.
 
 Roku sell extremely cheap Plex clients. Roku's Roku 3 is the best solution at around £70/\$100.
@@ -284,20 +296,20 @@ Given this, do you still want to install it? [y/n]"
 		read plexht_answer
 		if [[ "$(echo $plexht_answer | cut -c 1)" == "y" || "$(echo $plexht_answer | cut -c 1)" == "Y" ]]; then
 		echo "
-Plex Home Theater is installing..." >&2
+		Plex Home Theater is installing..." >&2
 		add-apt-repository -y ppa:plexapp/plexht
 		add-apt-repository -y ppa:pulse-eight/libcec
 		apt-get update
 		apt-get -y install plexhometheater
 		echo "
-Plex Home Theater has now been installed." >&2
+		Plex Home Theater has now been installed." >&2
 		fi
 		fi
 	;;
 	filebot_mac)
 		if [[ $filebot ]]; then
 		echo "
-FileBot is installing..." >&2
+		FileBot is installing..." >&2
 		wget -O filebot.html http://www.filebot.net >/dev/null 2>&1
 		filebot_version=$(cat filebot.html | grep ".app" | awk -F 'type=app' '{print $2}' | awk -F '_' '{print $NF}' | awk -F '.app' '{print $1}' | tail -n 1)
 		rm filebot.html
@@ -310,14 +322,14 @@ FileBot is installing..." >&2
 		sudo spctl --add --label "FileBot" /Applications/FileBot.app
 		sudo spctl --enable --label "FileBot"
 		echo "
-FileBot has been installed successfully.
+		FileBot has been installed successfully.
 		" >&2
 		fi
 	;;
 	filebot_linux)
 		if [[ $filebot ]]; then
 		echo "
-FileBot is installing..." >&2
+		FileBot is installing..." >&2
 		wget -O filebot.html http://www.filebot.net
 		filebot_version=$(cat filebot.html | grep deb | awk -F 'amd64' '{print $(NF-1)}' | awk -F '_' '{print $(NF-1)}')
 		rm filebot.html
@@ -327,14 +339,14 @@ FileBot is installing..." >&2
 		apt-get -f -y install
 		rm filebot.deb
 		echo "
-FileBot has been installed successfully.
+		FileBot has been installed successfully.
 		" >&2
 		fi
 	;;
 	makemkv_mac)
 		if [[ $makemkv ]]; then
 		echo "
-MakeMKV is installing...
+		MakeMKV is installing...
 When prompted, please agree to the license agreement." >&2
 		wget -O makemkv.html http://www.makemkv.com/download >/dev/null 2>&1
 		makemkv_version=$(cat makemkv.html | grep 'MakeMKV v' | awk -F 'MakeMKV v' '{print $2}' | cut -d ' ' -f 1 | head -n 1)
@@ -348,16 +360,16 @@ When prompted, please agree to the license agreement." >&2
 		diskutil unmountDisk $makemkv_image_raw >/dev/null 2>&1
 		rm makemkv.dmg
 		echo "
-MakeMKV has been installed successfully.
+		MakeMKV has been installed successfully.
 		" >&2
 		fi
 	;;
 	makemkv_linux)
 		if [[ $makemkv ]]; then
 		echo "
-MakeMKV is installing..." >&2
+		MakeMKV is installing..." >&2
 		echo "
-MakeMKV has been installed successfully.
+		MakeMKV has been installed successfully.
 		" >&2
 		fi
 	;;
@@ -371,12 +383,12 @@ MakeMKV has been installed successfully.
 		if [[ $openssh ]]; then
 		sudo systemsetup -setremotelogin on >/dev/null 2>&1
 		echo "
-Remote Login (ssh) has been switched on.
+		Remote Login (ssh) has been switched on.
 		" >&2
 		else
 		sudo systemsetup -setremotelogin off >/dev/null 2>&1
 		echo "
-Remote Login (ssh) has been switched off.
+		Remote Login (ssh) has been switched off.
 		" >&2
 		fi
 	;;
@@ -401,6 +413,7 @@ if [[ "$OS" == "Mac" ]]; then
 	installer_script mkvtoolnix_mac
 	installer_script handbrakecli_mac
 	installer_script filebot_mac
+	installer_script jre
 	installer_script java_runtime_environment
 	installer_script plexmediaserver_mac
 	installer_script plexhometheater_mac

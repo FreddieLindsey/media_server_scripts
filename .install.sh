@@ -43,6 +43,12 @@ echo "Please note that the scripts are currently untested on anything other than
 fi
 }
 
+# Symlink to ripping and transcoding scripts
+ln -s "$script_directory/rip_discs.sh" /usr/local/bin/discripper
+ln -s "$script_directory/plextranscoder.sh" /usr/local/bin/plext
+ln -s "$script_directory/transmission_finish.sh" /usr/local/bin/transmissionf
+
+
 # Installer script for each program
 installer_script () {
 	case "$1" in

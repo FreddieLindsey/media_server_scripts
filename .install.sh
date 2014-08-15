@@ -391,7 +391,7 @@ Opening MakeMKV source..." >&2
 Installing MakeMKV OSS..." >&2
 		cd makemkv-oss-$makemkv_version
 		./configure >/dev/null 2>&1
-		make
+		make >/dev/null 2>&1
 		sudo make install >/dev/null 2>&1
 		echo "
 Installing MakeMKV Bin..." >&2

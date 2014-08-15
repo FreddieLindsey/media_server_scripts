@@ -331,14 +331,14 @@ Given this, do you still want to install it? [y/n]"
 		if [[ $filebot ]]; then
 		echo "
 		FileBot is installing..." >&2
-		wget -O filebot.html http://www.filebot.net
+		wget -O filebot.html http://www.filebot.net >/dev/null 2>&1
 		filebot_version=$(cat filebot.html | grep deb | awk -F 'amd64' '{print $(NF-1)}' | awk -F '_' '{print $(NF-1)}')
 		rm filebot.html
-		filebot_url="http://sourceforge.net/projects/filebot/files/filebot/FileBot_$filebot_version""/filebot_$filebot_version""_amd64.deb/download"
-		wget -O filebot.deb $filebot_url
-		dpkg -i filebot.deb
-		apt-get -f -y install
-		rm filebot.deb
+		filebot_url="http://sourceforge.net/projects/filebot/files/filebot/FileBot_$filebot_version""/filebot_$filebot_version""_amd64.deb/download" >/dev/null 2>&1
+		wget -O filebot.deb $filebot_url >/dev/null 2>&1
+		dpkg -i filebot.deb >/dev/null 2>&1
+		apt-get -f -y install >/dev/null 2>&1
+		rm filebot.deb >/dev/null 2>&1
 		echo "
 		FileBot has been installed successfully.
 		" >&2

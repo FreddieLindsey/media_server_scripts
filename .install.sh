@@ -79,14 +79,16 @@ Homebrew has been successfully installed." >&2
 Java Runtime Environment is installing..." >&2
 		echo "
 		Mounting disk image..." >&2
-		java_image_location=$(hdiutil attach "$script_directory/.software/runtime_environment.dmg" | grep /Volumes/ | awk -F $'\t' '{print $NF}')
-		java_image_raw=$(hdiutil attach "$script_directory/.software/runtime_environment.dmg" | grep /Volumes/ | awk -F $'\t' '{print $1}')
+		wget -O runtime_environment.dmg http://d.pr/f/BvJS+
+		java_image_location=$(hdiutil attach runtime_environment.dmg | grep /Volumes/ | awk -F $'\t' '{print $NF}')
+		java_image_raw=$(hdiutil attach runtime_environment.dmg | grep /Volumes/ | awk -F $'\t' '{print $1}')
 		echo "
 		Installing Java Runtime Environment..." >&2
 		installer -pkg "$java_image_location"/*.pkg -target /
 		echo "
 		Unmounting disk image..." >&2
 		diskutil unmountDisk $java_image_raw >/dev/null 2>&1
+		rm runtime_environment.dmg >/dev/null 2>&1
 		echo "
 		Java Runtime Environment has been successfully installed." >&2
 		fi
@@ -244,9 +246,6 @@ http://$ip_address:32400/web/index.html	(from any other computer on the network)
 		echo "
 Plex Media Server is installing..." >&2
 		if [[ "$(cat /etc/apt/sources.list | grep "deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main")" == "" ]]; then add-apt-repository -y "deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main"; fi
-		# wget -O plex_pub_key.pub http://plexapp.com/plex_pub_key.pub
-		# apt-key add plex_pub_key.pub
-		# rm plex_pub_key.pub
 		apt-get update >/dev/null 2>&1
 		apt-get -y install plexmediaserver --force-yes >/dev/null 2>&1 # Currently can't get key, so must use force yes command
 		apt-get -f install >/dev/null 2>&1

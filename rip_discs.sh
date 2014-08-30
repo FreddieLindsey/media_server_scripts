@@ -54,6 +54,13 @@ check_os_disc_inserted () {
 
 }
 
+# Finds a name for the movie by creating a temporary file
+get_movie_name () {
+	touch "$ripping_loc/testfile.mkv"
+	new_movie_name="$(filebot --action test -rename -non-strict --q "$1" "$ripping_loc/testfile.mkv" | grep "TEST" | awk -F ' to ' '{print $2}' | cut -d '[' -f 2- | cut -d '.' -f 1)"
+	rm "$ripping_loc/testfile.mkv"
+}
+
 # Rips the disc in the drive to the folder name specified in argument 1 inside the set ripping location 
 makemkv_rip () {
 	# Set the location of makemkvcon according to the OS in use.
@@ -78,16 +85,20 @@ makemkv_rip () {
 	makemkv_command="$makemkvcon mkv disc:0 all --minlength=3600"
 	filebot_command="$filebot -rename -non-strict --conflict override --db themoviedb --format "
 	filebot_format="$filebot_format_ripped_disc"
-	final_output="$transcoding_movie_loc/$name_of_file"
+	ripping_location="$ripping_loc/$1"
+	if [[ "$movie_or_tv" != "movie" && "$movie_or_tv" != "Movie" ]]; then final_output="$transcoding_tv_loc"; else final_output="$transcoding_movie_loc"; fi
 	echo "
-	
-Will now send the following command to nohup:
+	Ripping Details:
 
-$script_directory/.ripping.sh \"$makemkv_command\" \"$filebot_command\" \"$filebot_format\" \"$final_output\"
+	Name: 				$2
+	Ripping Location: 		\"$ripping_loc\"
+	Transcoding Location: 		\"$final_output\"
+
+	*****
+	You may now close this terminal. Do not cancel this command, close the window/tab its running in.
+	*****
 " >&2
-	
-	nohup_command="$script_directory/.ripping.sh \"$makemkv_command\" \"$filebot_command\" \"$filebot_format\" \"$final_output\""
-	nohup $nohup_command
+	nohup $script_directory/.ripping.sh "$makemkv_command" "$filebot_command" "$filebot_format" "$ripping_location" "$final_output"
 }
 
 # Checks if makemkvcon is already running, and if so cancels the script
@@ -116,5 +127,8 @@ check_os_disc_inserted
 # Check if MakeMKV is already running and if so cancel script
 makemkv_running
 
+# Find a name for the movie
+get_movie_name "$name_of_file"
+
 # Rip the disc with the name given
-makemkv_rip "$name_of_file"
+makemkv_rip "$name_of_file" "$new_movie_name"

@@ -1,10 +1,19 @@
 #!/bin/bash
 
-script=$0
-makemkv_command=$1
-filebot_command=$2
-filebot_format=$3
-output_directory=$4
+script="$0"
+makemkv_command="$1"
+filebot_command="$2"
+filebot_format="$3"
+ripping_directory="$4"
+output_directory="$5"
+
+echo "
+Script:	\"$0\"
+MakeMKV command:	\"$1\"
+Filebot command:	\"$2\"
+Filebot format:	\"$3\"
+output_directory:	\"$4\"
+" >&2
 
 ##
 ##	FUNCTIONS
@@ -26,20 +35,20 @@ biggest_file_path="$1/$biggest_file_name"
 ##
 
 # Rip disc and eject
-if [[ ! -d "$output_directory" ]]; then mkdir "$output_directory"; fi
-ripping_command="$makemkv_command \"$output_directory\""
+if [[ ! -d "$ripping_directory" ]]; then mkdir "$ripping_directory"; fi
+ripping_command="$makemkv_command \"$ripping_directory\""
 echo "$ripping_command"
 eval "$ripping_command"
 sleep 5
-# drutil eject
+drutil eject
 
 # Get biggest file from folder
-biggest_file "$output_directory"
-mv "$biggest_file_path" "$output_directory.$biggest_file_ext"
+biggest_file "$ripping_directory"
+mv "$biggest_file_path" "$ripping_directory.$biggest_file_ext"
 
 # Delete folder
-rm -rf "$output_directory"
+rm -rf "$ripping_directory"
 
 # Rename biggest file with filebot
-echo "$filebot_command \"$filebot_format\" \"$output_directory.$biggest_file_ext\"" >&2
-eval "$filebot_command \"$filebot_format\" \"$output_directory.$biggest_file_ext\"" 
+echo "$filebot_command \"$output_directory/$filebot_format\"\"$ripping_directory.$biggest_file_ext\"" >&2
+eval "$filebot_command \"$output_directory/$filebot_format\" \"$ripping_directory.$biggest_file_ext\"" 

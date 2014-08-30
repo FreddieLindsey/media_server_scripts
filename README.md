@@ -79,11 +79,12 @@ It installs to /usr/local/media_server by default, remembering that if you're on
 
 To download the latest version of this repository issue the following command:
 
-	git clone -b development http://www.github.com/FreddieShoreditch/media_server.git /usr/local/media_server
+# Changed for final release
+	git clone -b release http://www.github.com/FreddieShoreditch/media_server.git /usr/local/media_server 
 
 Once this has completed issue the following command to install the scripts to your system:
 
-	/usr/local/media_server/install.sh
+	sudo /usr/local/media_server/install.sh
 
 ## Post-installation (updating and removal)
 
@@ -91,12 +92,12 @@ Once this has completed issue the following command to install the scripts to yo
 
 The time comes when we eventually need to update things.
 
-Luckily, I've included a little script that should take care of this for you.
+Luckily, included is a script that should take care of this for you.
 Just run the following command:
 
 	gitupdate /usr/local/media_server
 
-Note: If you have changed the directory where the git repository is saved, you will need to alter the above command accordingly.
+Note: If you have changed the directory where the git repository is saved, you will need to alter the above command accordingly. This will only work for the default directory at the moment.
 
 ### Removing
 

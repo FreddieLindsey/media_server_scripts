@@ -335,6 +335,7 @@ Filebot is already the latest version." >&2
 		echo "
 FileBot has been installed successfully.
 		" >&2
+		fi
 	;;
 	makemkv_mac)
 		echo "

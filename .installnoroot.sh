@@ -48,23 +48,23 @@ symlinks () {
 if [[ "$OS" == "Mac" ]]; then
 	
 	# Programs
-	ln -sf "/Applications/MakeMKV.app/Contents/MacOS/makemkvcon" /usr/local/bin/makemkvcon
-	ln -sf "/Applications/FileBot.app/Contents/MacOS/filebot.sh" /usr/local/bin/filebot
-	ln -sf "/Applications/Plex Media Server.app/Contents/MacOS/Plex Media Scanner" /usr/local/bin/PMScanner
+	sudo ln -sf "/Applications/MakeMKV.app/Contents/MacOS/makemkvcon" /usr/local/bin/makemkvcon
+	sudo ln -sf "/Applications/FileBot.app/Contents/MacOS/filebot.sh" /usr/local/bin/filebot
+	sudo ln -sf "/Applications/Plex Media Server.app/Contents/MacOS/Plex Media Scanner" /usr/local/bin/PMScanner
 	
 	# Scripts
-	ln -sf "/usr/local/media_server/rip_discs.sh" /usr/local/bin/discripper
-	ln -sf "/usr/local/media_server/plextranscoder.sh" /usr/local/bin/plext
-	ln -sf "/usr/local/media_server/transmission_finish.sh" /usr/local/bin/transmissionf
+	sudo ln -sf "/usr/local/media_server/rip_discs.sh" /usr/local/bin/discripper
+	sudo ln -sf "/usr/local/media_server/plextranscoder.sh" /usr/local/bin/plext
+	sudo ln -sf "/usr/local/media_server/transmission_finish.sh" /usr/local/bin/transmissionf
 	
 elif [[ "$OS" == "Linux" ]]; then
 	
 	# Programs
 	
 	# Scripts
-	ln -sf "/usr/local/media_server/rip_discs.sh" /usr/local/bin/discripper
-	ln -sf "/usr/local/media_server/plextranscoder.sh" /usr/local/bin/plext
-	ln -sf "/usr/local/media_server/transmission_finish.sh" /usr/local/bin/transmissionf
+	sudo ln -sf "/usr/local/media_server/rip_discs.sh" /usr/local/bin/discripper
+	sudo ln -sf "/usr/local/media_server/plextranscoder.sh" /usr/local/bin/plext
+	sudo ln -sf "/usr/local/media_server/transmission_finish.sh" /usr/local/bin/transmissionf
 	
 fi
 }
@@ -437,13 +437,13 @@ check_os
 # Warns the user of any issues, known constraints of using their OS
 warning_message
 
+sudo echo "
+Requesting sudo privileges. Please accept for a clean install." >&2
+
 # Symlinks the scripts to the /usr/local/bin directory
 symlinks
 
 # Installer for each OS
-sudo echo "
-Requesting sudo privileges. Please accept for a clean install." >&2
-
 if [[ "$OS" == "Mac" ]]; then
 	
 	# Essentials

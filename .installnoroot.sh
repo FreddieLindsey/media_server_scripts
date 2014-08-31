@@ -240,7 +240,7 @@ http://$ip_address:32400/web/index.html	(from any other computer on the network)
 	plexmediaserver_linux)
 		echo "
 Plex Media Server is installing..." >&2
-		if [[ "$(cat /etc/apt/sources.list | grep "deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main")" == "" ]]; then add-apt-repository -y "deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main"; fi
+		if [[ "$(cat /etc/apt/sources.list | grep "deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main")" == "" ]]; then sudo add-apt-repository -y "deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main"; fi
 		sudo apt-get update >/dev/null 2>&1
 		sudo apt-get -y install plexmediaserver --force-yes >/dev/null 2>&1 # Currently can't get key, so must use force yes command
 		sudo apt-get -f install >/dev/null 2>&1
@@ -436,9 +436,6 @@ check_os
 
 # Warns the user of any issues, known constraints of using their OS
 warning_message
-
-sudo echo "
-Requesting sudo privileges. Please accept for a clean install." >&2
 
 # Symlinks the scripts to the /usr/local/bin directory
 symlinks

@@ -427,7 +427,7 @@ Private Internet Access has been installed successfully.
 	pia_linux)
 		echo "
 Private Internet Access is installing..." >&2
-		wget -0 pia_install.sh https://www.privateinternetaccess.com/installer/install_ubuntu.sh
+		wget -O pia_install.sh https://www.privateinternetaccess.com/installer/install_ubuntu.sh
 		echo "
 		Private Internet Access will now install. Please follow the instructions." >&2
 		sudo sh ./pia_install.sh
@@ -534,7 +534,7 @@ Would you like to install Private Internet Access? [y/n]">&2
 Would you like to install DuckDNS? [y/n]">&2
 	read duck_dns_answer
 	if [[ "$(echo $duck_dns_answer | cut -c 1)" == "y" || "$(echo $duck_dns_answer | cut -c 1)" == "Y" ]]; then
-		installer_script duck_dns
+		installer_script duckdns
 	fi
 	echo "
 Whilst not recommended, would you like to install Plex Home Theater? [y/n]">&2

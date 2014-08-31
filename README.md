@@ -6,7 +6,7 @@ Before you read or download anything, please just check a few things. You must b
 
 * Use a terminal emulator
 * Have physical access to your computer
-* Be running either Mac OS X 10.9 or Ubuntu 14.04 LTS (Desktop or Server are tested)
+* Be running either Mac OS X 10.9 or Ubuntu 12.04 LTS (Desktop)
 
 It is STRONGLY recommended you have a quad-core machine to run these scripts, or if not, a Core i5 or above processor, preferably with hyper-threading enabled. If you're running Mac OS X, a Mac from 2011 or later will generally suffice. You will see considerable performance issues if the processor of the machine you intend to run these scripts on is underpowered.
 
@@ -69,7 +69,7 @@ Finally, it's import to accept the license agreements for Xcode. To do this, ope
 
 	sudo xcodebuild -license
 
-### Ubuntu Desktop or Server
+### Ubuntu Desktop
 
 Firstly, go into terminal and type in the following command to ensure you have `git` installed:
 

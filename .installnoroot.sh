@@ -505,7 +505,6 @@ elif [[ "$OS" == "Linux" ]]; then
 	installer_script handbrakecli_linux
 	installer_script filebot_linux
 	installer_script plexmediaserver_linux
-	installer_script duckdns
 	installer_script avahi_daemon
 	installer_script openssh_server
 	

@@ -456,38 +456,38 @@ if [[ "$OS" == "Mac" ]]; then
 	
 	# Extras
 	echo "
-	Would you like to install Plex Home Theater? [y/n]">&2
-	read plexht_answer
-	if [[ "$(echo $plexht_answer | cut -c 1)" == "y" || "$(echo $plexht_answer | cut -c 1)" == "Y" ]]; then
-		echo "
-
-	Please understand that running Plex Home Theater on the same machine as the server is NOT recommended. All resources should be given to the server.
-
-	Roku sell extremely cheap Plex clients. Roku's Roku 3 is the best solution at around £70/\$100.
-
-	Given this, do you still want to install it? [y/n]"
-		read plexht_answer2
-		if [[ "$(echo $plexht_answer2 | cut -c 1)" == "y" || "$(echo $plexht_answer2 | cut -c 1)" == "Y" ]]; then
-			installer_script plexhometheater_mac
-		fi
-	fi
-	echo "
-	Would you like to install Transmission BitTorrent Client? [y/n]">&2
+Would you like to install Transmission BitTorrent Client? [y/n]">&2
 	read transbt_answer
 	if [[ "$(echo $transbt_answer | cut -c 1)" == "y" || "$(echo $transbt_answer | cut -c 1)" == "Y" ]]; then
 		installer_script transmission_daemon_mac
 	fi
 	echo "
-	Would you like to install Private Internet Access? [y/n]">&2
+Would you like to install Private Internet Access? [y/n]">&2
 	read pia_mac_answer
 	if [[ "$(echo $pia_mac_answer | cut -c 1)" == "y" || "$(echo $pia_mac_answer | cut -c 1)" == "Y" ]]; then
 		installer_script pia_mac
 	fi
 	echo "
-	Would you like to install DuckDNS? [y/n]">&2
+Would you like to install DuckDNS? [y/n]">&2
 	read duck_dns_answer
 	if [[ "$(echo $duck_dns_answer | cut -c 1)" == "y" || "$(echo $duck_dns_answer | cut -c 1)" == "Y" ]]; then
 		installer_script duck_dns
+	fi
+	echo "
+Whilst not recommended, would you like to install Plex Home Theater? [y/n]">&2
+	read plexht_answer
+	if [[ "$(echo $plexht_answer | cut -c 1)" == "y" || "$(echo $plexht_answer | cut -c 1)" == "Y" ]]; then
+		echo "
+
+Please understand that running Plex Home Theater on the same machine as the server is NOT recommended. All resources should be given to the server.
+
+Roku sell extremely cheap Plex clients. Roku's Roku 3 is the best solution at around £70/\$100.
+
+Given this, do you still want to install it? [y/n]"
+		read plexht_answer2
+		if [[ "$(echo $plexht_answer2 | cut -c 1)" == "y" || "$(echo $plexht_answer2 | cut -c 1)" == "Y" ]]; then
+			installer_script plexhometheater_mac
+		fi
 	fi
 	echo "
 
@@ -507,34 +507,34 @@ elif [[ "$OS" == "Linux" ]]; then
 	
 	# Extras
 	echo "
-	Would you like to install Transmission BitTorrent Client? [y/n]">&2
+Would you like to install Transmission BitTorrent Client? [y/n]">&2
 	read transbt_answer
 	if [[ "$(echo $transbt_answer | cut -c 1)" == "y" || "$(echo $transbt_answer | cut -c 1)" == "Y" ]]; then
 		installer_script transmission_daemon_linux
 	fi
 	echo "
-	Would you like to install Private Internet Access? [y/n]">&2
+Would you like to install Private Internet Access? [y/n]">&2
 	read pia_linux_answer
 	if [[ "$(echo $pia_mac_answer | cut -c 1)" == "y" || "$(echo $pia_mac_answer | cut -c 1)" == "Y" ]]; then
 		installer_script pia_linux
 	fi
 	echo "
-	Would you like to install DuckDNS? [y/n]">&2
+Would you like to install DuckDNS? [y/n]">&2
 	read duck_dns_answer
 	if [[ "$(echo $duck_dns_answer | cut -c 1)" == "y" || "$(echo $duck_dns_answer | cut -c 1)" == "Y" ]]; then
 		installer_script duck_dns
 	fi
 	echo "
-	Whilst not recommended, would you like to install Plex Home Theater? [y/n]">&2
+Whilst not recommended, would you like to install Plex Home Theater? [y/n]">&2
 	read plexht_answer
 	if [[ "$(echo $plexht_answer | cut -c 1)" == "y" || "$(echo $plexht_answer | cut -c 1)" == "Y" ]]; then
 		echo "
 
-	Please understand that running Plex Home Theater on the same machine as the server is NOT recommended. All resources should be given to the server.
+Please understand that running Plex Home Theater on the same machine as the server is NOT recommended. All resources should be given to the server.
 
-	Roku sell extremely cheap Plex clients. Roku's Roku 3 is the best solution at around £70/\$100.
+Roku sell extremely cheap Plex clients. Roku's Roku 3 is the best solution at around £70/\$100.
 
-	Given this, do you still want to install it? [y/n]"
+Given this, do you still want to install it? [y/n]"
 		read plexht_answer2
 		if [[ "$(echo $plexht_answer2 | cut -c 1)" == "y" || "$(echo $plexht_answer2 | cut -c 1)" == "Y" ]]; then
 			installer_script plexhometheater_linux

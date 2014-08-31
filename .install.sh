@@ -334,14 +334,20 @@ When prompted, please agree to the license agreement." >&2
 		wget -O makemkv.html http://www.makemkv.com/download >/dev/null 2>&1
 		makemkv_version=$(cat makemkv.html | grep 'MakeMKV v' | awk -F 'MakeMKV v' '{print $2}' | cut -d ' ' -f 1 | head -n 1)
 		rm makemkv.html
-		makemkv_url="http://www.makemkv.com/download/makemkv_v$makemkv_version""_osx.dmg"
-		wget -O makemkv.dmg $makemkv_url >/dev/null 2>&1
-		makemkv_image_location=$(hdiutil attach makemkv.dmg | grep /Volumes/ | awk -F $'\t' '{print $NF}')
-		makemkv_image_raw=$(hdiutil attach makemkv.dmg | grep /Volumes/ | awk -F $'\t' '{print $1}')
-		cp -R $makemkv_image_location/MakeMKV.app /Applications/
-		sudo installer -pkg "$makemkv_image_location"/daspi* -target / >/dev/null 2>&1
-		sudo diskutil unmountDisk $makemkv_image_raw >/dev/null 2>&1
-		rm makemkv.dmg
+		installed_version=$(makemkvcon info | grep "MakeMKV v" | awk -F 'v' '{print $2}' | awk -F ' ' '{print $1}')
+		if [[ "$makemkv_version" == "$installed_version" ]]; then
+			echo "
+MakeMKV is already the latest version." >&2
+		else
+			makemkv_url="http://www.makemkv.com/download/makemkv_v$makemkv_version""_osx.dmg"
+			wget -O makemkv.dmg $makemkv_url >/dev/null 2>&1
+			makemkv_image_location=$(hdiutil attach makemkv.dmg | grep /Volumes/ | awk -F $'\t' '{print $NF}')
+			makemkv_image_raw=$(hdiutil attach makemkv.dmg | grep /Volumes/ | awk -F $'\t' '{print $1}')
+			cp -R $makemkv_image_location/MakeMKV.app /Applications/
+			sudo installer -pkg "$makemkv_image_location"/daspi* -target / >/dev/null 2>&1
+			sudo diskutil unmountDisk $makemkv_image_raw >/dev/null 2>&1
+			rm makemkv.dmg
+		fi
 		echo "
 MakeMKV has been installed successfully.
 		" >&2
@@ -355,27 +361,33 @@ MakeMKV is installing..." >&2
 		wget -O makemkv.html http://www.makemkv.com/download >/dev/null 2>&1
 		makemkv_version=$(cat makemkv.html | grep 'MakeMKV v' | awk -F 'MakeMKV v' '{print $2}' | cut -d ' ' -f 1 | head -n 1)
 		rm makemkv.html
-		echo "
+		installed_version=$(makemkvcon info | grep "MakeMKV v" | awk -F 'v' '{print $2}' | awk -F ' ' '{print $1}')
+		if [[ "$makemkv_version" == "$installed_version" ]]; then
+			echo "
+MakeMKV is already the latest version." >&2
+		else
+			echo "
 		Downloading MakeMKV..." >&2
-		wget -O makemkv-bin.tar.gz http://www.makemkv.com/download/makemkv-bin-$makemkv_version.tar.gz >/dev/null 2>&1
-		wget -O makemkv-oss.tar.gz http://www.makemkv.com/download/makemkv-oss-$makemkv_version.tar.gz >/dev/null 2>&1
+			wget -O makemkv-bin.tar.gz http://www.makemkv.com/download/makemkv-bin-$makemkv_version.tar.gz >/dev/null 2>&1
+			wget -O makemkv-oss.tar.gz http://www.makemkv.com/download/makemkv-oss-$makemkv_version.tar.gz >/dev/null 2>&1
 		echo "
 		Opening MakeMKV source..." >&2
-		tar -xf makemkv-bin.tar.gz >/dev/null 2>&1
-		tar -xf makemkv-oss.tar.gz >/dev/null 2>&1
-		rm makemkv-bin.tar.gz >/dev/null 2>&1
-		rm makemkv-oss.tar.gz >/dev/null 2>&1
-		echo "
+			tar -xf makemkv-bin.tar.gz >/dev/null 2>&1
+			tar -xf makemkv-oss.tar.gz >/dev/null 2>&1
+			rm makemkv-bin.tar.gz >/dev/null 2>&1
+			rm makemkv-oss.tar.gz >/dev/null 2>&1
+			echo "
 		Installing MakeMKV OSS..." >&2
-		cd makemkv-oss-$makemkv_version
-		./configure >/dev/null 2>&1
-		make >/dev/null 2>&1
-		sudo make install >/dev/null 2>&1
-		echo "
+			cd makemkv-oss-$makemkv_version
+			./configure >/dev/null 2>&1
+			make >/dev/null 2>&1
+			sudo make install >/dev/null 2>&1
+			echo "
 		Installing MakeMKV Bin..." >&2
-		cd ../makemkv-bin-$makemkv_version
-		make
-		sudo make install >/dev/null 2>&1
+			cd ../makemkv-bin-$makemkv_version
+			make
+			sudo make install >/dev/null 2>&1
+		fi
 		echo "
 MakeMKV has been installed successfully.
 		" >&2

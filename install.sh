@@ -8,4 +8,4 @@ script_directory=$(echo `dirname $script`)
 
 username_current=$(basename $HOME)
 
-sudo su root -c "$script_directory/.install.sh $username_current"
+eval "$script_directory/.installnoroot.sh $username_current"

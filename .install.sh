@@ -527,7 +527,7 @@ Would you like to install Transmission BitTorrent Client? [y/n]">&2
 	echo "
 Would you like to install Private Internet Access? [y/n]">&2
 	read pia_linux_answer
-	if [[ "$(echo $pia_mac_answer | cut -c 1)" == "y" || "$(echo $pia_mac_answer | cut -c 1)" == "Y" ]]; then
+	if [[ "$(echo $pia_linux_answer | cut -c 1)" == "y" || "$(echo $pia_linux_answer | cut -c 1)" == "Y" ]]; then
 		installer_script pia_linux
 	fi
 	echo "

@@ -14,6 +14,8 @@ It is STRONGLY recommended you have a quad-core machine to run these scripts, or
 
 1.	Upon inserting a disc into your computer, allows you to issue the following command to rip the disc as an MKV to your computer with a name of your choice. There are two arguments to the script as shown below. {disc kind} should be replace with either movie or tv dependent on the content kind. {disc name} should be replaced with the title of the film and a year if possible (quoted) for a movie, or the name of the show and the season number (with a hyphon between).
 
+---
+
 	discripper {disc kind} {disc name}
 
 	Examples:
@@ -22,18 +24,28 @@ It is STRONGLY recommended you have a quad-core machine to run these scripts, or
 	discripper tv "New Girl - Season 03"
 	discripper tv "Downton Abbey - Season 01"
 
+---
+
 2.	Transcodes all your media in movie and TV folders which you specify. For movies, these are transcoded into a smaller and a larger file, one for mobile use and one for high definition viewing from home clients. For TV, these are transcoded into one file at the original resolution. To achieve this, you can issue a command with the arguments of either "movie" or "tv". For each argument, the transcoder will go through all the files in the movie/tv directory, one by one, and transcode them as specified. 
+
+---
 
 	Examples:
 	plextranscoder movie
 	plextranscoder tv
 
+---
+
 3.	Downloads new media using open source software. This must be done responsibly and I hold no responsibility for anyone who downloads these scripts and uses them for irresponsible and illegal means. 
 	To add media to be downloaded run the following command with either the torrent or the magnet link:
-	
+
+---
+
 	tremote -a [torrent location/magnet link]
 	
 	To monitor your downloads, go to http://[IP ADDRESS OF YOUR MACHINE]:9091 where the username and password will be those set upon install.
+
+---
 
 ## Pre-installation
 

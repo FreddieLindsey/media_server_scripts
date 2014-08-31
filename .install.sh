@@ -45,16 +45,34 @@ fi
 
 # Symlink to ripping and transcoding scripts
 symlinks () {
-ln -sf "/usr/local/media_server/rip_discs.sh" /usr/local/bin/discripper
-ln -sf "/usr/local/media_server/plextranscoder.sh" /usr/local/bin/plext
-ln -sf "/usr/local/media_server/transmission_finish.sh" /usr/local/bin/transmissionf
+if [[ "$OS" == "Mac" ]]; then
+	
+	# Programs
+	ln -sf "/Applications/MakeMKV.app/Contents/MacOS/makemkvcon" /usr/local/bin/makemkvcon
+	ln -sf "/Applications/FileBot.app/Contents/MacOS/filebot.sh" /usr/local/bin/filebot
+	ln -sf "/Applications/Plex Media Server.app/Contents/MacOS/Plex Media Scanner" /usr/local/bin/PMScanner
+	
+	# Scripts
+	ln -sf "/usr/local/media_server/rip_discs.sh" /usr/local/bin/discripper
+	ln -sf "/usr/local/media_server/plextranscoder.sh" /usr/local/bin/plext
+	ln -sf "/usr/local/media_server/transmission_finish.sh" /usr/local/bin/transmissionf
+	
+elif [[ "$OS" == "Linux" ]]; then
+	
+	# Programs
+	
+	# Scripts
+	ln -sf "/usr/local/media_server/rip_discs.sh" /usr/local/bin/discripper
+	ln -sf "/usr/local/media_server/plextranscoder.sh" /usr/local/bin/plext
+	ln -sf "/usr/local/media_server/transmission_finish.sh" /usr/local/bin/transmissionf
+	
+fi
 }
 
 # Installer script for each program
 installer_script () {
 	case "$1" in
 	homebrew)
-		if [[ $homebrew ]]; then
 		echo "
 Homebrew is installing..." >&2
 		echo "
@@ -71,10 +89,8 @@ Homebrew is installing..." >&2
 		Required utility (wget) installed..." >&2
 		echo "
 Homebrew has been successfully installed." >&2
-		fi
 	;;
 	jre)
-		if [[ $java ]]; then
 		echo "
 Java Runtime Environment is installing..." >&2
 		echo "
@@ -91,20 +107,16 @@ Java Runtime Environment is installing..." >&2
 		rm runtime_environment.dmg >/dev/null 2>&1
 		echo "
 		Java Runtime Environment has been successfully installed." >&2
-		fi
 	;;
 	transmission_daemon_mac)
-		if [[ $transmission_daemon ]]; then
 		echo "
 Transmission is installing..." >&2
 		sudo su $username_current -c 'brew update && brew install transmission' >/dev/null 2>&1
 		echo "
 Transmission has been installed successfully.
 		" >&2
-		fi
 	;;
 	transmission_daemon_linux)
-		if [[ $transmission_daemon ]]; then
 		echo "
 Transmission is installing..." >&2
 		add-apt-repository -y ppa:transmissionbt/ppa >/dev/null 2>&1
@@ -114,20 +126,16 @@ Transmission is installing..." >&2
 		echo "
 Transmission has been installed successfully.
 		" >&2
-		fi
 	;;
 	mkvtoolnix_mac)
-		if [[ $mkvtoolnix ]]; then
 		echo "
 MKVtoolnix is installing..." >&2
 		sudo su $username_current -c 'brew update && brew install mkvtoolnix' >/dev/null 2>&1
 		echo "
 MKVtoolnix has been installed successfully
 		" >&2
-		fi
 	;;
 	mkvtoolnix_linux)
-		if [[ $mkvtoolnix ]]; then
 		echo "
 MKVtoolnix is installing..." >&2
 		apt-get update >/dev/null 2>&1
@@ -135,10 +143,8 @@ MKVtoolnix is installing..." >&2
 		echo "
 MKVtoolnix has been installed successfully
 		" >&2
-		fi
 	;;
 	handbrakecli_mac)
-		if [[ $handbrakecli ]]; then
 		echo "
 		HandBrakeCLI is installing..." >&2
 		wget -O HandBrakeCLI.dmg http://sourceforge.net/projects/handbrake/files/0.9.9/HandBrake-0.9.9-MacOSX.6_CLI_x86_64.dmg/download >/dev/null 2>&1
@@ -150,10 +156,8 @@ MKVtoolnix has been installed successfully
 		echo "
 		HandBrakeCLI has been installed successfully.
 		" >&2
-		fi
 	;;
 	handbrakecli_linux)
-		if [[ $handbrakecli ]]; then
 		echo "
 HandBrakeCLI is installing..." >&2
 		apt-get update >/dev/null 2>&1
@@ -162,20 +166,16 @@ HandBrakeCLI is installing..." >&2
 		echo "
 HandBrakeCLI has been installed successfully.
 		" >&2
-		fi
 	;;
 	openssh_server)
-		if [[ $openssh ]]; then
 		echo "
 openssh-server is installing..." >&2
 		apt-get -y install openssh-server >/dev/null 2>&1
 		apt-get -f install >/dev/null 2>&1
 		echo "
 openssh-server has been installed successfully." >&2
-		fi
 	;;
 	duckdns)
-		if [[ $duckdns ]]; then
 		echo "
 		Do you have a dynamic address for duckdns.org? [y/n]" >&2
 		read answer
@@ -212,11 +212,9 @@ DuckDNS is installing..." >&2
 DuckDNS installed successfully. Please continue." >&2; else echo "
 DuckDNS has not been installed correctly, please seek advice on installation from https://www.duckdns.org" >&2; fi
 			fi
-		
 		fi
 	;;
 	plexmediaserver_mac)
-		if [[ $pms ]]; then
 		echo "
 Plex Media Server is installing..." >&2
 		plexmediaserver_version=0.9.9.14.531-7eef8c6
@@ -239,10 +237,8 @@ http://$ip_address:32400/web/index.html	(from any other computer on the network)
 
 
 " >&2
-		fi
 	;;
 	plexmediaserver_linux)
-		if [[ $pms ]]; then
 		echo "
 Plex Media Server is installing..." >&2
 		if [[ "$(cat /etc/apt/sources.list | grep "deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main")" == "" ]]; then add-apt-repository -y "deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main"; fi
@@ -261,10 +257,8 @@ http://$ip_address:32400/web/index.html	(from any other computer on the network)
 
 
 " >&2
-		fi
 	;;
 	plexhometheater_mac)
-		if [[ $pht ]]; then
 		echo "
 Plex Home Theater is installing..." >&2
 		echo "
@@ -288,33 +282,18 @@ Plex Home Theater is installing..." >&2
 		echo "
 Plex Home Theater has now been installed." >&2
 		fi
-		fi
 	;;
 	plexhometheater_linux)
-		if [[ $pht ]]; then
 		echo "
 Plex Home Theater is installing..." >&2
-		echo "
-		
-		
-		Please understand that running Plex Home Theater on the same machine as the server is NOT recommended. All resources should be given to the server.
-
-		Roku sell extremely cheap Plex clients. Roku's Roku 3 is the best solution at around £70/\$100.
-
-		Given this, do you still want to install it? [y/n]"
-		read plexht_answer
-		if [[ "$(echo $plexht_answer | cut -c 1)" == "y" || "$(echo $plexht_answer | cut -c 1)" == "Y" ]]; then
 		add-apt-repository -y ppa:plexapp/plexht >/dev/null 2>&1
 		add-apt-repository -y ppa:pulse-eight/libcec >/dev/null 2>&1
 		apt-get update >/dev/null 2>&1
 		apt-get -y install plexhometheater >/dev/null 2>&1
 		echo "
 Plex Home Theater has now been installed." >&2
-		fi
-		fi
 	;;
 	filebot_mac)
-		if [[ $filebot ]]; then
 		echo "
 FileBot is installing..." >&2
 		wget -O filebot.html http://www.filebot.net >/dev/null 2>&1
@@ -331,10 +310,8 @@ FileBot is installing..." >&2
 		echo "
 FileBot has been installed successfully.
 		" >&2
-		fi
 	;;
 	filebot_linux)
-		if [[ $filebot ]]; then
 		echo "
 FileBot is installing..." >&2
 		wget -O filebot.html http://www.filebot.net >/dev/null 2>&1
@@ -348,10 +325,8 @@ FileBot is installing..." >&2
 		echo "
 FileBot has been installed successfully.
 		" >&2
-		fi
 	;;
 	makemkv_mac)
-		if [[ $makemkv ]]; then
 		echo "
 MakeMKV is installing...
 When prompted, please agree to the license agreement." >&2
@@ -371,10 +346,8 @@ When prompted, please agree to the license agreement." >&2
 		echo "
 MakeMKV has been installed successfully.
 		" >&2
-		fi
 	;;
 	makemkv_linux)
-		if [[ $makemkv ]]; then
 		echo "
 MakeMKV is installing..." >&2
 		echo "
@@ -407,10 +380,8 @@ MakeMKV is installing..." >&2
 		echo "
 MakeMKV has been installed successfully.
 		" >&2
-		fi
 	;;
 	avahi_daemon)
-		if [[ $avahi ]]; then
 		echo "
 Bonjour Service is installing..." >&2
 		apt-get -y install avahi-daemon >/dev/null 2>&1
@@ -418,10 +389,8 @@ Bonjour Service is installing..." >&2
 		echo "
 Bonjour Service has been installed successfully.
 		" >&2
-		fi
 	;;
 	ssh_daemon)
-		if [[ $openssh ]]; then
 		sudo systemsetup -setremotelogin on >/dev/null 2>&1
 		echo "
 Remote Login (ssh) has been switched on.
@@ -431,7 +400,34 @@ Remote Login (ssh) has been switched on.
 		echo "
 Remote Login (ssh) has been switched off.
 		" >&2
-		fi
+	;;
+	pia_mac)
+		echo "
+Private Internet Access is installing..." >&2
+		wget -O pia_osx.dmg https://www.privateinternetaccess.com/installer/installer_osx.dmg
+		pia_image_location=$(hdiutil attach pia_osx.dmg | grep /Volumes/ | awk -F $'\t' '{print $NF}')
+		pia_image_raw=$(hdiutil attach pia_osx.dmg | grep /Volumes/ | awk -F $'\t' '{print $1}')
+		echo "
+		Private Internet Access will now install via GUI. Please follow the instructions and then hit return when you have set up the client as you wish." >&2
+		read enter
+		sudo open "$pia_image_location/Private Internet Access Installer.app"
+		diskutil unmountDisk $pia_image_raw >/dev/null 2>&1
+		rm pia_osx.dmg
+		echo "
+Private Internet Access has been installed successfully.
+		" >&2
+	;;
+	pia_linux)
+		echo "
+Private Internet Access is installing..." >&2
+		wget -0 pia_install.sh https://www.privateinternetaccess.com/installer/install_ubuntu.sh
+		echo "
+		Private Internet Access will now install. Please follow the instructions." >&2
+		sudo sh ./pia_install.sh
+		rm pia_install.sh
+		echo "
+Private Internet Access has been installed successfully.
+		" >&2
 	;;
 	esac
 }
@@ -451,6 +447,8 @@ symlinks
 
 # Installer for each OS
 if [[ "$OS" == "Mac" ]]; then
+	
+	# Essentials
 	installer_script homebrew
 	installer_script makemkv_mac
 	installer_script mkvtoolnix_mac
@@ -459,37 +457,97 @@ if [[ "$OS" == "Mac" ]]; then
 	installer_script jre
 	installer_script java_runtime_environment
 	installer_script plexmediaserver_mac
-	installer_script plexhometheater_mac
-	installer_script transmission_daemon_mac
-	installer_script duckdns
 	installer_script ssh_daemon
+	
+	# Extras
+	echo "
+	Would you like to install Plex Home Theater? [y/n]">&2
+	read plexht_answer
+	if [[ "$(echo $plexht_answer | cut -c 1)" == "y" || "$(echo $plexht_answer | cut -c 1)" == "Y" ]]; then
+		echo "
+
+	Please understand that running Plex Home Theater on the same machine as the server is NOT recommended. All resources should be given to the server.
+
+	Roku sell extremely cheap Plex clients. Roku's Roku 3 is the best solution at around £70/\$100.
+
+	Given this, do you still want to install it? [y/n]"
+		read plexht_answer2
+		if [[ "$(echo $plexht_answer2 | cut -c 1)" == "y" || "$(echo $plexht_answer2 | cut -c 1)" == "Y" ]]; then
+			installer_script plexhometheater_mac
+		fi
+	fi
+	echo "
+	Would you like to install Transmission BitTorrent Client? [y/n]">&2
+	read transbt_answer
+	if [[ "$(echo $transbt_answer | cut -c 1)" == "y" || "$(echo $transbt_answer | cut -c 1)" == "Y" ]]; then
+		installer_script transmission_daemon_mac
+	fi
+	echo "
+	Would you like to install Private Internet Access? [y/n]">&2
+	read pia_mac_answer
+	if [[ "$(echo $pia_mac_answer | cut -c 1)" == "y" || "$(echo $pia_mac_answer | cut -c 1)" == "Y" ]]; then
+		installer_script pia_mac
+	fi
+	echo "
+	Would you like to install DuckDNS? [y/n]">&2
+	read duck_dns_answer
+	if [[ "$(echo $duck_dns_answer | cut -c 1)" == "y" || "$(echo $duck_dns_answer | cut -c 1)" == "Y" ]]; then
+		installer_script duck_dns
+	fi
 	echo "
 
 The installation has finished. Please enjoy your server! Download and watch responsibly!
 
 " >&2
 elif [[ "$OS" == "Linux" ]]; then
+	
+	# Essentials
 	installer_script makemkv_linux
 	installer_script mkvtoolnix_linux
 	installer_script handbrakecli_linux
 	installer_script filebot_linux
 	installer_script plexmediaserver_linux
-	installer_script plexhometheater_linux
-	installer_script transmission_daemon_linux
 	installer_script duckdns
 	installer_script avahi_daemon
 	installer_script openssh_server
+	
+	# Extras
+	echo "
+	Would you like to install Transmission BitTorrent Client? [y/n]">&2
+	read transbt_answer
+	if [[ "$(echo $transbt_answer | cut -c 1)" == "y" || "$(echo $transbt_answer | cut -c 1)" == "Y" ]]; then
+		installer_script transmission_daemon_linux
+	fi
+	echo "
+	Would you like to install Private Internet Access? [y/n]">&2
+	read pia_linux_answer
+	if [[ "$(echo $pia_mac_answer | cut -c 1)" == "y" || "$(echo $pia_mac_answer | cut -c 1)" == "Y" ]]; then
+		installer_script pia_linux
+	fi
+	echo "
+	Would you like to install DuckDNS? [y/n]">&2
+	read duck_dns_answer
+	if [[ "$(echo $duck_dns_answer | cut -c 1)" == "y" || "$(echo $duck_dns_answer | cut -c 1)" == "Y" ]]; then
+		installer_script duck_dns
+	fi
+	echo "
+	Whilst not recommended, would you like to install Plex Home Theater? [y/n]">&2
+	read plexht_answer
+	if [[ "$(echo $plexht_answer | cut -c 1)" == "y" || "$(echo $plexht_answer | cut -c 1)" == "Y" ]]; then
+		echo "
+
+	Please understand that running Plex Home Theater on the same machine as the server is NOT recommended. All resources should be given to the server.
+
+	Roku sell extremely cheap Plex clients. Roku's Roku 3 is the best solution at around £70/\$100.
+
+	Given this, do you still want to install it? [y/n]"
+		read plexht_answer2
+		if [[ "$(echo $plexht_answer2 | cut -c 1)" == "y" || "$(echo $plexht_answer2 | cut -c 1)" == "Y" ]]; then
+			installer_script plexhometheater_linux
+		fi
+	fi
 	echo "
 
 The installation has finished. Please enjoy your server! Download and watch responsibly!
-
-You may have to update the permissions of your media directories by running the following commands on them:
-\`sudo chown $username_current:plex -R [YOUR MEDIA DIRECTORY HERE]\`
-\`sudo chmod 770 -R [YOUR MEDIA DIRECTORY HERE]\`
-
-To update and upgrade your system, please run the following command regularly:
-
-\`sudo apt-get update && sudo apt-get -y upgrade\` 
-
 " >&2
 fi

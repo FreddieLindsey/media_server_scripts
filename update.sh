@@ -74,11 +74,18 @@ Reinstalling..." >&2
 		if [[ "$git_done" == "Checking connectivity... done." ]]; then rm -rf "$script_directory"; fi
 	fi
 elif [[ "$script_directory" == "$1" ]]; then
-	up_to_date="$(git -C "$1" pull origin | grep "Already ")"
+	up_to_date="$(git -C "$1" pull origin | grep "Already up-to-date.")"
+		if [[ "$up_to_date" == "Already up-to-date." ]]; then
+			echo "
+The git repository at \"$1\" is already the newest available version." >&2
+		elif [[ "$up_to_date" == "" ]]; then
+			echo "
+The git repository at \"$1\" has been updated. It is recommended that you reinstall the scripts with the newest version to maintain compatibility."
+		fi
 fi
 
 # Install over the old install if necessary
-if [[ -z "$up_to_date" || "" == "$up_to_date" ]]; then
+if [[ -z "$up_to_date" || "$up_to_date" == "" ]]; then
 echo "
 Now installing updated script" >&2
 eval "$1/install.sh"

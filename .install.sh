@@ -48,23 +48,23 @@ symlinks () {
 if [[ "$OS" == "Mac" ]]; then
 	
 	# Programs
-	ln -sf "/Applications/MakeMKV.app/Contents/MacOS/makemkvcon" /usr/local/bin/makemkvcon
-	ln -sf "/Applications/FileBot.app/Contents/MacOS/filebot.sh" /usr/local/bin/filebot
-	ln -sf "/Applications/Plex Media Server.app/Contents/MacOS/Plex Media Scanner" /usr/local/bin/PMScanner
+	sudo ln -sf "/Applications/MakeMKV.app/Contents/MacOS/makemkvcon" /usr/local/bin/makemkvcon
+	sudo ln -sf "/Applications/FileBot.app/Contents/MacOS/filebot.sh" /usr/local/bin/filebot
+	sudo ln -sf "/Applications/Plex Media Server.app/Contents/MacOS/Plex Media Scanner" /usr/local/bin/PMScanner
 	
 	# Scripts
-	ln -sf "/usr/local/media_server/rip_discs.sh" /usr/local/bin/discripper
-	ln -sf "/usr/local/media_server/plextranscoder.sh" /usr/local/bin/plext
-	ln -sf "/usr/local/media_server/transmission_finish.sh" /usr/local/bin/transmissionf
+	sudo ln -sf "/usr/local/media_server/rip_discs.sh" /usr/local/bin/discripper
+	sudo ln -sf "/usr/local/media_server/plextranscoder.sh" /usr/local/bin/plext
+	sudo ln -sf "/usr/local/media_server/transmission_finish.sh" /usr/local/bin/transmissionf
 	
 elif [[ "$OS" == "Linux" ]]; then
 	
 	# Programs
 	
 	# Scripts
-	ln -sf "/usr/local/media_server/rip_discs.sh" /usr/local/bin/discripper
-	ln -sf "/usr/local/media_server/plextranscoder.sh" /usr/local/bin/plext
-	ln -sf "/usr/local/media_server/transmission_finish.sh" /usr/local/bin/transmissionf
+	sudo ln -sf "/usr/local/media_server/rip_discs.sh" /usr/local/bin/discripper
+	sudo ln -sf "/usr/local/media_server/plextranscoder.sh" /usr/local/bin/plext
+	sudo ln -sf "/usr/local/media_server/transmission_finish.sh" /usr/local/bin/transmissionf
 	
 fi
 }
@@ -80,11 +80,11 @@ Homebrew is installing..." >&2
 		curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install | grep -v "wait_for_user if STDIN.tty?" >homebrew.rb
 		echo "
 		Homebrew is installing..." >&2
-		sudo su $username_current -c 'ruby homebrew.rb' >/dev/null 2>&1
+		ruby homebrew.rb >/dev/null 2>&1
 		rm homebrew.rb
 		echo "
 		Required utility (wget) installing..." >&2
-		sudo su $username_current -c 'brew update && brew install wget' >/dev/null 2>&1
+		brew update && brew install wget >/dev/null 2>&1
 		echo "
 		Required utility (wget) installed..." >&2
 		echo "
@@ -100,10 +100,10 @@ Java Runtime Environment is installing..." >&2
 		java_image_raw=$(hdiutil attach runtime_environment.dmg | grep /Volumes/ | awk -F $'\t' '{print $1}')
 		echo "
 		Installing Java Runtime Environment..." >&2
-		installer -pkg "$java_image_location"/*.pkg -target /
+		sudo installer -pkg "$java_image_location"/*.pkg -target /
 		echo "
 		Unmounting disk image..." >&2
-		diskutil unmountDisk $java_image_raw >/dev/null 2>&1
+		sudo diskutil unmountDisk $java_image_raw >/dev/null 2>&1
 		rm runtime_environment.dmg >/dev/null 2>&1
 		echo "
 		Java Runtime Environment has been successfully installed." >&2
@@ -111,7 +111,7 @@ Java Runtime Environment is installing..." >&2
 	transmission_daemon_mac)
 		echo "
 Transmission is installing..." >&2
-		sudo su $username_current -c 'brew update && brew install transmission' >/dev/null 2>&1
+		brew update && brew install transmission >/dev/null 2>&1
 		echo "
 Transmission has been installed successfully.
 		" >&2
@@ -119,10 +119,10 @@ Transmission has been installed successfully.
 	transmission_daemon_linux)
 		echo "
 Transmission is installing..." >&2
-		add-apt-repository -y ppa:transmissionbt/ppa >/dev/null 2>&1
-		apt-get update >/dev/null 2>&1
-		apt-get -y install transmission-common transmission-daemon transmission-cli >/dev/null 2>&1
-		apt-get -f install >/dev/null 2>&1
+		sudo add-apt-repository -y ppa:transmissionbt/ppa >/dev/null 2>&1
+		sudo apt-get update >/dev/null 2>&1
+		sudo apt-get -y install transmission-common transmission-daemon transmission-cli >/dev/null 2>&1
+		sudo apt-get -f install >/dev/null 2>&1
 		echo "
 Transmission has been installed successfully.
 		" >&2
@@ -130,7 +130,7 @@ Transmission has been installed successfully.
 	mkvtoolnix_mac)
 		echo "
 MKVtoolnix is installing..." >&2
-		sudo su $username_current -c 'brew update && brew install mkvtoolnix' >/dev/null 2>&1
+		brew update && brew install mkvtoolnix >/dev/null 2>&1
 		echo "
 MKVtoolnix has been installed successfully
 		" >&2
@@ -138,8 +138,8 @@ MKVtoolnix has been installed successfully
 	mkvtoolnix_linux)
 		echo "
 MKVtoolnix is installing..." >&2
-		apt-get update >/dev/null 2>&1
-		apt-get -y install mkvtoolnix >/dev/null 2>&1
+		sudo apt-get update >/dev/null 2>&1
+		sudo apt-get -y install mkvtoolnix >/dev/null 2>&1
 		echo "
 MKVtoolnix has been installed successfully
 		" >&2
@@ -151,7 +151,7 @@ MKVtoolnix has been installed successfully
 		handbrake_image_location=$(hdiutil attach HandBrakeCLI.dmg | grep /Volumes/ | awk -F $'\t' '{print $NF}')
 		handbrake_image_raw=$(hdiutil attach HandBrakeCLI.dmg | grep /Volumes/ | awk -F $'\t' '{print $1}')
 		cp $handbrake_image_location/HandBrakeCLI /usr/local/bin/
-		diskutil unmountDisk $handbrake_image_raw >/dev/null 2>&1
+		sudo diskutil unmountDisk $handbrake_image_raw >/dev/null 2>&1
 		rm HandBrakeCLI.dmg
 		echo "
 		HandBrakeCLI has been installed successfully.
@@ -160,9 +160,9 @@ MKVtoolnix has been installed successfully
 	handbrakecli_linux)
 		echo "
 HandBrakeCLI is installing..." >&2
-		apt-get update >/dev/null 2>&1
-		apt-get -y install handbrake-cli >/dev/null 2>&1
-		apt-get -f install >/dev/null 2>&1
+		sudo apt-get update >/dev/null 2>&1
+		sudo apt-get -y install handbrake-cli >/dev/null 2>&1
+		sudo apt-get -f install >/dev/null 2>&1
 		echo "
 HandBrakeCLI has been installed successfully.
 		" >&2
@@ -191,7 +191,7 @@ DuckDNS is installing..." >&2
 			touch /usr/local/bin/duckdns/duck.sh
 			touch /usr/local/bin/duckdns/duck.log
 			chmod +x /usr/local/bin/duckdns/duck.sh
-			chown -R $username_current /usr/local/bin/duckdns
+				sudo chown -R $username_current /usr/local/bin/duckdns
 			echo "
 			What is your dynamic address for duckdns.org? e.g. for someaddress.duckdns.org type someaddress in below and then hit [ENTER]" >&2
 			read dynamicaddress
@@ -240,10 +240,10 @@ http://$ip_address:32400/web/index.html	(from any other computer on the network)
 	plexmediaserver_linux)
 		echo "
 Plex Media Server is installing..." >&2
-		if [[ "$(cat /etc/apt/sources.list | grep "deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main")" == "" ]]; then add-apt-repository -y "deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main"; fi
-		apt-get update >/dev/null 2>&1
-		apt-get -y install plexmediaserver --force-yes >/dev/null 2>&1 # Currently can't get key, so must use force yes command
-		apt-get -f install >/dev/null 2>&1
+		if [[ "$(cat /etc/apt/sources.list | grep "deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main")" == "" ]]; then sudo add-apt-repository -y "deb http://plex.r.worldssl.net/PlexMediaServer/ubuntu-repo lucid main"; fi
+		sudo apt-get update >/dev/null 2>&1
+		sudo apt-get -y install plexmediaserver --force-yes >/dev/null 2>&1 # Currently can't get key, so must use force yes command
+		sudo apt-get -f install >/dev/null 2>&1
 		ip_address="$(ifconfig | grep "Bcast" | grep "inet" | cut -d ":" -f 2 | cut -d ' ' -f 1)"
 		echo "
 Plex Media Server has now been installed.
@@ -285,10 +285,10 @@ Plex Home Theater has now been installed." >&2
 	plexhometheater_linux)
 		echo "
 Plex Home Theater is installing..." >&2
-		add-apt-repository -y ppa:plexapp/plexht >/dev/null 2>&1
-		add-apt-repository -y ppa:pulse-eight/libcec >/dev/null 2>&1
-		apt-get update >/dev/null 2>&1
-		apt-get -y install plexhometheater >/dev/null 2>&1
+		sudo add-apt-repository -y ppa:plexapp/plexht >/dev/null 2>&1
+		sudo add-apt-repository -y ppa:pulse-eight/libcec >/dev/null 2>&1
+		sudo apt-get update >/dev/null 2>&1
+		sudo apt-get -y install plexhometheater >/dev/null 2>&1
 		echo "
 Plex Home Theater has now been installed." >&2
 	;;
@@ -318,8 +318,8 @@ FileBot is installing..." >&2
 		rm filebot.html
 		filebot_url="http://sourceforge.net/projects/filebot/files/filebot/FileBot_$filebot_version""/filebot_$filebot_version""_amd64.deb/download" >/dev/null 2>&1
 		wget -O filebot.deb $filebot_url >/dev/null 2>&1
-		dpkg -i filebot.deb >/dev/null 2>&1
-		apt-get -f -y install >/dev/null 2>&1
+		sudo dpkg -i filebot.deb >/dev/null 2>&1
+		sudo apt-get -f -y install >/dev/null 2>&1
 		rm filebot.deb >/dev/null 2>&1
 		echo "
 FileBot has been installed successfully.
@@ -339,8 +339,8 @@ When prompted, please agree to the license agreement." >&2
 		makemkv_image_location=$(hdiutil attach makemkv.dmg | grep /Volumes/ | awk -F $'\t' '{print $NF}')
 		makemkv_image_raw=$(hdiutil attach makemkv.dmg | grep /Volumes/ | awk -F $'\t' '{print $1}')
 		cp -R $makemkv_image_location/MakeMKV.app /Applications/
-		installer -pkg "$makemkv_image_location"/daspi* -target / >/dev/null 2>&1
-		diskutil unmountDisk $makemkv_image_raw >/dev/null 2>&1
+		sudo installer -pkg "$makemkv_image_location"/daspi* -target / >/dev/null 2>&1
+		sudo diskutil unmountDisk $makemkv_image_raw >/dev/null 2>&1
 		rm makemkv.dmg
 		echo "
 MakeMKV has been installed successfully.
@@ -351,7 +351,7 @@ MakeMKV has been installed successfully.
 MakeMKV is installing..." >&2
 		echo "
 		Installing dependencies..." >&2
-		apt-get -y install build-essential pkg-config libc6-dev libssl-dev libexpat1-dev libavcodec-dev libgl1-mesa-dev libqt4-dev >/dev/null 2>&1
+		sudo apt-get -y install build-essential pkg-config libc6-dev libssl-dev libexpat1-dev libavcodec-dev libgl1-mesa-dev libqt4-dev >/dev/null 2>&1
 		wget -O makemkv.html http://www.makemkv.com/download >/dev/null 2>&1
 		makemkv_version=$(cat makemkv.html | grep 'MakeMKV v' | awk -F 'MakeMKV v' '{print $2}' | cut -d ' ' -f 1 | head -n 1)
 		rm makemkv.html
@@ -383,8 +383,8 @@ MakeMKV has been installed successfully.
 	avahi_daemon)
 		echo "
 Bonjour Service is installing..." >&2
-		apt-get -y install avahi-daemon >/dev/null 2>&1
-		apt-get -f install >/dev/null 2>&1
+		sudo apt-get -y install avahi-daemon >/dev/null 2>&1
+		sudo apt-get -f install >/dev/null 2>&1
 		echo "
 Bonjour Service has been installed successfully.
 		" >&2
@@ -404,8 +404,9 @@ Private Internet Access is installing..." >&2
 		echo "
 		Private Internet Access will now install via GUI. Please follow the instructions and then hit return when you have set up the client as you wish." >&2
 		read enter
-		sudo open "$pia_image_location/Private Internet Access Installer.app"
-		diskutil unmountDisk $pia_image_raw >/dev/null 2>&1
+		open "$pia_image_location/Private Internet Access Installer.app"
+		sleep 30
+		sudo diskutil unmountDisk $pia_image_raw >/dev/null 2>&1
 		rm pia_osx.dmg
 		echo "
 Private Internet Access has been installed successfully.
@@ -501,7 +502,6 @@ elif [[ "$OS" == "Linux" ]]; then
 	installer_script handbrakecli_linux
 	installer_script filebot_linux
 	installer_script plexmediaserver_linux
-	installer_script duckdns
 	installer_script avahi_daemon
 	installer_script openssh_server
 	

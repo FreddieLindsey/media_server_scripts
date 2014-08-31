@@ -96,7 +96,7 @@ To download the latest version of this repository issue the following command:
 
 Once this has completed issue the following command to install the scripts to your system:
 
-	sudo /usr/local/media_server/install.sh
+	/usr/local/media_server/install.sh
 
 ## Post-installation (updating and removal)
 

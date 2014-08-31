@@ -6,9 +6,11 @@
 #--------------------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------------------#
 
-script=$0
-cd `dirname $script`
-script_directory=$(pwd -P)
+script="$0"
+if [[ "$(echo "/$(ls -ld $0 | cut -d '/' -f 2-)" | grep -)" != "" ]]; then
+	script=$(echo "/$(ls -ld $0 | cut -d '/' -f 2-)" | grep - | cut -d '>' -f 2- | cut -c 2-)
+fi
+script_directory=$(echo `dirname $script`)
 movie_or_tv="$1"
 name_of_file="$2"
 
@@ -69,60 +71,66 @@ if [[ ${#audio_array[@]} -gt 1 ]]; then
 
 	for i in $(eval echo {$starting_track..$ending_track})
 	do
-	    if [[ "${track_array[i]}" == "$language_to_find" ]] ; then
-	    	audio_track="$(($i+1-${#video_array[@]}))"
-	    fi
+		if [[ -z "$audio_track" ]]; then
+	    	if [[ "${track_array[i]}" == "$language_to_find" ]] ; then
+	    		audio_track="$(($i+1-${#video_array[@]}))"
+	    	fi
+		fi
 	done
+	
+	if [[ -z "$audio_track" ]]; then
+		audio_track="1"
+	fi
 else
 	audio_track="1"
 fi
 }
 
-<<COMMENT
 # Analyse how many formats and which formats should be used when transcoding
 format_output () {
-
+input_file="$1"
+if [[ "$movie_or_tv" == "tv" ]]; then
+	format_number="0"
+elif [[ "$movie_or_tv" == "movie" ]]; then
+file_width="$(mediainfo "$input_file" | grep "Width" | cut -d ":" -f 2- | awk -F 'pixels' '{print $1}' | tr -d ' ')"
+case "$file_width" in
+	
+esac
+fi
 }
-COMMENT
 
 # Transcode a file with HandBrakeCLI with the formats specified in argument 2 (1,2 or 1,3 for example) and then rename using Filebot before deleting the original file
 transcode_with_handbrake_and_filebot () {
 input_file="$1"
+format_number="$2"
 basename=$(basename "$1")
 filename=${basename%.*}
 get_lang "$1" "English"
 
-oldIFS=$IFS
-IFS=',' read -rd '' -a format_numbers <<<"$2"
-IFS=$oldIFS
 
-for i in "${format_numbers[@]}"
-do
-	i=$(echo $i | tr -d ' ')
-	case "$i" in
-	0)
-		transcode_settings="$transcode_zer"
-	;;
-	1)
-		transcode_settings="$transcode_one"
-	;;
-	2)
-		transcode_settings="$transcode_two"
-	;;
+format_number=$(echo "$format_number" | tr -d ' ')
+case "$i" in
+0)
+	transcode_settings="$transcode_zer"
+;;
+1)
+	transcode_settings="$transcode_one"
+;;
+2)
+	transcode_settings="$transcode_two"
+;;
 	3)
-		transcode_settings="$transcode_thr"
-	;;
-	esac
-	
-	if [[ "$i" != "" ]]; then
-	output_format="$temp_loc/$filename""_$i.mkv"	
-	handbrake_command="$HandBrakeCLI -i \"$1\" -o \"$output_format\" $transcode_settings -a $audio_track"
-	echo $handbrake_command >&2
-	# eval $handbrake_command 
-	fi
-done
-# rm "$1"
+	transcode_settings="$transcode_thr"
+;;
+esac
 
+if [[ "$format_number" != "" ]]; then
+output_format="$temp_loc/$filename""_$format_number.mkv"	
+handbrake_command="$HandBrakeCLI -i \"$1\" -o \"$output_format\" $transcode_settings -a $audio_track"
+echo $handbrake_command >&2
+# eval $handbrake_command 
+fi
+# rm "$1"
 }
 
 
@@ -132,38 +140,4 @@ done
 
 check_os
 
-if [[ "$movie_or_tv" == "movie" ]]; then
-	transcode_with_handbrake_and_filebot "$name_of_file" 1,3
-elif [[ "$movie_or_tv" == "tv" ]]; then
-	transcode_with_handbrake_and_filebot "$name_of_file" 0,1,,3
-fi
-
-
-
-<<COMMENTED
-
-
-handbrake_command_1="$handbrake_location/HandBrakeCLI -i \"$1\" -o \"$file_1st_output\" $handbrake_format_conditions_1"
-echo "
-Executing...
-
-$handbrake_command_1
-
-" >&2
-eval $handbrake_command_1
-
-# Remove the original file and move the encoded version to the output directory
-
-# rm "$1"
-
-# Use filebot to organise the file
-
-filebot_command_1="$filebot_location/filebot -non-strict -rename --conflict override --db themoviedb --format \"$filebot_format_conditions\" --output \"$output_dir\" \"$file_1st_output\""
-
-echo "
-Will now execute the command:
-$filebot_command_1
-
-" >&2
-eval $filebot_command_1
-COMMENTED
+transcode_with_handbrake_and_filebot "$name_of_file" "$format_number"

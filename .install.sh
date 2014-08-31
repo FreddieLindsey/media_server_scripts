@@ -211,7 +211,6 @@ DuckDNS is installing..." >&2
 			if [[ "$(cat /usr/local/bin/duckdns/duck.log)" == "OK" ]]; then echo "
 DuckDNS installed successfully. Please continue." >&2; else echo "
 DuckDNS has not been installed correctly, please seek advice on installation from https://www.duckdns.org" >&2; fi
-			fi
 		fi
 	;;
 	plexmediaserver_mac)

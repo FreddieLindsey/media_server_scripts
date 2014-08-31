@@ -394,11 +394,6 @@ Bonjour Service has been installed successfully.
 		echo "
 Remote Login (ssh) has been switched on.
 		" >&2
-		else
-		sudo systemsetup -setremotelogin off >/dev/null 2>&1
-		echo "
-Remote Login (ssh) has been switched off.
-		" >&2
 	;;
 	pia_mac)
 		echo "

@@ -298,14 +298,20 @@ FileBot is installing..." >&2
 		wget -O filebot.html http://www.filebot.net >/dev/null 2>&1
 		filebot_version=$(cat filebot.html | grep ".app" | awk -F 'type=app' '{print $2}' | awk -F '_' '{print $NF}' | awk -F '.app' '{print $1}' | tail -n 1)
 		rm filebot.html
-		filebot_url="http://sourceforge.net/projects/filebot/files/filebot/FileBot_$filebot_version""/FileBot_$filebot_version"".app.tar.gz/download"
-		wget -O filebot.app.tar.gz $filebot_url >/dev/null 2>&1
-		tar -xvf filebot.app.tar.gz >/dev/null 2>&1
-		rm filebot.app.tar.gz
-		if [[ -e "/Applications/FileBot.app" ]]; then rm -rf "/Applications/FileBot.app"; fi
-		mv FileBot.app /Applications/FileBot.app >/dev/null 2>&1
-		sudo spctl --add --label "FileBot" /Applications/FileBot.app
-		sudo spctl --enable --label "FileBot"
+		installed_version=$(filebot -version | head -n 1 | awk -F ' ' '{print $2}')
+		if [[ "$filebot_version" == "$installed_version" ]]; then
+			echo "
+Filebot is already the latest version." >&2
+		else
+			filebot_url="http://sourceforge.net/projects/filebot/files/filebot/FileBot_$filebot_version""/FileBot_$filebot_version"".app.tar.gz/download"
+			wget -O filebot.app.tar.gz $filebot_url >/dev/null 2>&1
+			tar -xvf filebot.app.tar.gz >/dev/null 2>&1
+			rm filebot.app.tar.gz
+			if [[ -e "/Applications/FileBot.app" ]]; then rm -rf "/Applications/FileBot.app"; fi
+			mv FileBot.app /Applications/FileBot.app >/dev/null 2>&1
+			sudo spctl --add --label "FileBot" /Applications/FileBot.app
+			sudo spctl --enable --label "FileBot"
+		fi
 		echo "
 FileBot has been installed successfully.
 		" >&2
@@ -316,11 +322,16 @@ FileBot is installing..." >&2
 		wget -O filebot.html http://www.filebot.net >/dev/null 2>&1
 		filebot_version=$(cat filebot.html | grep deb | awk -F 'amd64' '{print $(NF-1)}' | awk -F '_' '{print $(NF-1)}')
 		rm filebot.html
-		filebot_url="http://sourceforge.net/projects/filebot/files/filebot/FileBot_$filebot_version""/filebot_$filebot_version""_amd64.deb/download" >/dev/null 2>&1
-		wget -O filebot.deb $filebot_url >/dev/null 2>&1
-		sudo dpkg -i filebot.deb >/dev/null 2>&1
-		sudo apt-get -f -y install >/dev/null 2>&1
-		rm filebot.deb >/dev/null 2>&1
+		installed_version=$(filebot -version | head -n 1 | awk -F ' ' '{print $2}')
+		if [[ "$filebot_version" == "$installed_version" ]]; then
+			echo "
+Filebot is already the latest version." >&2
+		else
+			filebot_url="http://sourceforge.net/projects/filebot/files/filebot/FileBot_$filebot_version""/filebot_$filebot_version""_amd64.deb/download" >/dev/null 2>&1
+			wget -O filebot.deb $filebot_url >/dev/null 2>&1
+			sudo dpkg -i filebot.deb >/dev/null 2>&1
+			sudo apt-get -f -y install >/dev/null 2>&1
+			rm filebot.deb >/dev/null 2>&1
 		echo "
 FileBot has been installed successfully.
 		" >&2

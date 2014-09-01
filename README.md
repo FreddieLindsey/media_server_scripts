@@ -92,7 +92,7 @@ It installs to /usr/local/media_server by default, remembering that if you're on
 To download the latest version of this repository issue the following command:
 
 # Changed for final release
-	git clone -b release http://www.github.com/FreddieShoreditch/media_server.git /usr/local/media_server 
+	git clone -b development http://www.github.com/FreddieShoreditch/media_server.git /usr/local/media_server 
 
 Once this has completed issue the following command to install the scripts to your system:
 

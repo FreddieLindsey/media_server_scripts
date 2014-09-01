@@ -11,13 +11,6 @@ fi
 script_directory=$(echo `dirname $script`)
 username_current="$1"
 
-configfile="$script_directory/media_server.cfg"
-if [[ -f "$configfile" ]]; then echo "
-Found config file:		$configfile
-" >&2 && source "$configfile"; else echo "
-Could not find config file. Are all the relevant scripts and files in the right directory?
-" >&2 && exit 1; fi
-
 ##
 ##	FUNCTIONS
 ##
@@ -298,7 +291,7 @@ FileBot is installing..." >&2
 		wget -O filebot.html http://www.filebot.net >/dev/null 2>&1
 		filebot_version=$(cat filebot.html | grep ".app" | awk -F 'type=app' '{print $2}' | awk -F '_' '{print $NF}' | awk -F '.app' '{print $1}' | tail -n 1)
 		rm filebot.html
-		installed_version=$(filebot -version | head -n 1 | awk -F ' ' '{print $2}')
+		if [[ "$(which filebot)" != "" ]]; then installed_version=$(filebot -version | head -n 1 | awk -F ' ' '{print $2}'); else installed_version="0.0.0"; fi
 		if [[ "$filebot_version" == "$installed_version" ]]; then
 			echo "
 Filebot is already the latest version." >&2
@@ -322,7 +315,7 @@ FileBot is installing..." >&2
 		wget -O filebot.html http://www.filebot.net >/dev/null 2>&1
 		filebot_version=$(cat filebot.html | grep deb | awk -F 'amd64' '{print $(NF-1)}' | awk -F '_' '{print $(NF-1)}')
 		rm filebot.html
-		installed_version=$(filebot -version | head -n 1 | awk -F ' ' '{print $2}')
+		if [[ "$(which filebot)" != "" ]]; then installed_version=$(filebot -version | head -n 1 | awk -F ' ' '{print $2}'); else installed_version="0.0.0"; fi
 		if [[ "$filebot_version" == "$installed_version" ]]; then
 			echo "
 Filebot is already the latest version." >&2
@@ -346,7 +339,7 @@ When prompted, please agree to the license agreement." >&2
 		wget -O makemkv.html http://www.makemkv.com/download >/dev/null 2>&1
 		makemkv_version=$(cat makemkv.html | grep 'MakeMKV v' | awk -F 'MakeMKV v' '{print $2}' | cut -d ' ' -f 1 | head -n 1)
 		rm makemkv.html
-		installed_version=$(makemkvcon info | grep "MakeMKV v" | awk -F 'v' '{print $2}' | awk -F ' ' '{print $1}')
+		if [[ "$(which makemkvcon)" != "" ]]; then installed_version=$(makemkvcon info | grep "MakeMKV v" | awk -F 'v' '{print $2}' | awk -F ' ' '{print $1}'); else installed_version="0.0.0"; fi
 		if [[ "$makemkv_version" == "$installed_version" ]]; then
 			echo "
 MakeMKV is already the latest version." >&2
@@ -422,13 +415,13 @@ Remote Login (ssh) has been switched on.
 	pia_mac)
 		echo "
 Private Internet Access is installing..." >&2
-		wget -O pia_osx.dmg https://www.privateinternetaccess.com/installer/installer_osx.dmg
+		wget -O pia_osx.dmg https://www.privateinternetaccess.com/installer/installer_osx.dmg >/dev/null 2>&1
 		pia_image_location=$(hdiutil attach pia_osx.dmg | grep /Volumes/ | awk -F $'\t' '{print $NF}')
 		pia_image_raw=$(hdiutil attach pia_osx.dmg | grep /Volumes/ | awk -F $'\t' '{print $1}')
 		echo "
 		Private Internet Access will now install via GUI. Please follow the instructions and then hit return when you have set up the client as you wish." >&2
-		read enter
 		open "$pia_image_location/Private Internet Access Installer.app"
+		read enter
 		sleep 30
 		sudo diskutil unmountDisk $pia_image_raw >/dev/null 2>&1
 		rm pia_osx.dmg
@@ -439,7 +432,9 @@ Private Internet Access has been installed successfully.
 	pia_linux)
 		echo "
 Private Internet Access is installing..." >&2
-		wget -O pia_install.sh https://www.privateinternetaccess.com/installer/install_ubuntu.sh
+		wget -O pia_install.sh https://www.privateinternetaccess.com/installer/install_ubuntu.sh >/dev/null 2>&1
+		sudo apt-get -y install network-manager-openvpn >/dev/null 2>&1
+		sudo apt-get -y -f install >/dev/null 2>&1
 		echo "
 		Private Internet Access will now install. Please follow the instructions." >&2
 		sudo sh ./pia_install.sh
@@ -447,6 +442,15 @@ Private Internet Access is installing..." >&2
 		echo "
 Private Internet Access has been installed successfully.
 		" >&2
+	;;
+	esac
+}
+
+# Setup script for each program to configure available options from the command line
+setup_script () {
+	case "$1" in
+	transmission_linux)
+	
 	;;
 	esac
 }
@@ -535,6 +539,17 @@ Would you like to install Transmission BitTorrent Client? [y/n]">&2
 	read transbt_answer
 	if [[ "$(echo $transbt_answer | cut -c 1)" == "y" || "$(echo $transbt_answer | cut -c 1)" == "Y" ]]; then
 		installer_script transmission_daemon_linux
+		echo "
+Would you like to setup the configuration for Transmission now? [y/n]" >&2
+		read transmission_setup
+		if [[ "$(echo $transmission_setup | cut -c 1)" == "y" || "$(echo $transmission_setup | cut -c 1)" == "Y" ]]; then
+			setup_script transmission_mac
+		else
+			echo "
+To set up Transmission later, just run the following command from terminal:
+
+server_setup --transmission" >&2
+		fi
 	fi
 	echo "
 Would you like to install Private Internet Access? [y/n]">&2

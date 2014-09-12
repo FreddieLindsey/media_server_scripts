@@ -387,11 +387,15 @@ MakeMKV is already the latest version." >&2
 			./configure >/dev/null 2>&1
 			make >/dev/null 2>&1
 			sudo make install >/dev/null 2>&1
+			cd
+			rm -rf makemkv-oss-$makemkv_version
 			echo "
 		Installing MakeMKV Bin..." >&2
-			cd ../makemkv-bin-$makemkv_version
+			cd makemkv-bin-$makemkv_version
 			make
 			sudo make install >/dev/null 2>&1
+			cd
+			rm -rf makemkv-bin-$makemkv_version
 		fi
 		echo "
 MakeMKV has been installed successfully.

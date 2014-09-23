@@ -6,6 +6,7 @@ filebot_command="$2"
 filebot_format="$3"
 ripping_directory="$4"
 output_directory="$5"
+disc_eject="$6"
 
 echo "
 Script:	\"$0\"
@@ -40,7 +41,7 @@ ripping_command="$makemkv_command \"$ripping_directory\""
 echo "$ripping_command"
 eval "$ripping_command"
 sleep 5
-drutil eject
+eval "$disc_eject"
 
 # Get biggest file from folder
 biggest_file "$ripping_directory"

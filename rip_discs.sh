@@ -37,9 +37,11 @@ check_os_disc_inserted () {
 	if [ "$(uname)" = "Darwin" ]; then
 		OS="Mac"
 		disc_inserted=$(drutil status | grep "Type" | grep -v "No Media Inserted")
+		disc_eject="drutil eject"
 	elif [ "$(uname)" = "Linux" ]; then
 		OS="Linux"
 		disc_inserted=$(df -H | grep "/dev/sr")
+		disc_eject="eject $(df -H | grep "/dev/sr" | awk -F ' ' '{print $1}')"
 	else
 		echo "Your Operating System is not supported. Please request support via GitHub. If you feel there is an issue, please post it on GitHub."
 		exit
@@ -98,7 +100,7 @@ makemkv_rip () {
 	You may now close this terminal. Do not cancel this command, close the window/tab its running in.
 	*****
 " >&2
-	nohup $script_directory/.ripping.sh "$makemkv_command" "$filebot_command" "$filebot_format" "$ripping_location" "$final_output"
+	nohup $script_directory/.ripping.sh "$makemkv_command" "$filebot_command" "$filebot_format" "$ripping_location" "$final_output" "$disc_eject"
 }
 
 # Checks if makemkvcon is already running, and if so cancels the script

@@ -7,16 +7,16 @@
 #--------------------------------------------------------------------------------------------------#
 
 script="$0"
-if [[ "$(echo "/$(ls -ld $0 | cut -d '/' -f 2-)" | grep -)" != "" ]]; then
-	script=$(echo "/$(ls -ld $0 | cut -d '/' -f 2-)" | grep - | cut -d '>' -f 2- | cut -c 2-)
-fi
-script_directory=$(echo `dirname $script`)
+##if [[ "$(echo "/$(ls -ld $0 | cut -d '/' -f 2-)" | grep -)" != "" ]]; then
+##	script=$(echo "/$(ls -ld $0 | cut -d '/' -f 2-)" | grep - | cut -d '>' -f 2- | cut -c 2-)
+##fi
+script_directory=$(dirname $script)
 movie_or_tv="$1"
-name_of_file="$2"
+folder="$2"
 
 # Script must have two arguments or it will fail
 if [[ -z "$2" ]]; then echo "
-Please ensure you append a file type and the file location you wish to process to the script.
+Please ensure you append a file type and the folder location you wish to process to the script.
 " >&2 && exit; fi
 
 # Search for and source a config file
@@ -37,7 +37,7 @@ Could not find config file. Are all the relevant scripts and files in the right 
 check_os () {
 	if [ "$(uname)" = "Darwin" ]; then
 		OS="Mac"
-		HandBrakeCLI="$handbrake_location/HandBrakeCLI"
+		HandBrakeCLI=$(which handbrakecli)
 	elif [ "$(uname)" = "Linux" ]; then
 		OS="Linux"
 		HandBrakeCLI=$(whereis HandBrakeCLI | cut -d ' ' -f 2)
@@ -56,7 +56,7 @@ language_to_find="$2"
 
 no_tracks=$(mediainfo "$input_file" | grep "Language" | cut -d':' -f 2 | tr -d ' ')
 no_video=$(mediainfo "$input_file" | grep "Video" | grep -v "Format" | grep -v "Codec")
-no_audio=$(mediainfo "$input_file" | grep "Audio" | grep -v "Format" | grep -v "Codec")
+no_audio=$(mediainfo "$input_file" | grep "Audio #" | grep -v "Format" | grep -v "Codec")
 
 oldIFS=$IFS
 IFS=$'\n' 
@@ -69,12 +69,14 @@ if [[ ${#audio_array[@]} -gt 1 ]]; then
 	starting_track=${#video_array[@]}
 	ending_track=$((${#video_array[@]}+${#audio_array[@]}-1))
 
-	for i in $(eval echo {$starting_track..$ending_track})
-	do
-		if [[ -z "$audio_track" ]]; then
+	for (( i = $starting_track ; i = $ending_track ; i++ ))
+	do	
+	  if [[ -z "$audio_track" ]]; then
 	    	if [[ "${track_array[i]}" == "$language_to_find" ]] ; then
 	    		audio_track="$(($i+1-${#video_array[@]}))"
 	    	fi
+    else
+      break
 		fi
 	done
 	
@@ -92,10 +94,18 @@ input_file="$1"
 if [[ "$movie_or_tv" == "tv" ]]; then
 	format_number="0"
 elif [[ "$movie_or_tv" == "movie" ]]; then
-file_width="$(mediainfo "$input_file" | grep "Width" | cut -d ":" -f 2- | awk -F 'pixels' '{print $1}' | tr -d ' ')"
-case "$file_width" in
-	
-esac
+  file_width="$(mediainfo "$input_file" | grep "Width" | cut -d ":" -f 2- | awk -F 'pixels' '{print $1}' | tr -d ' ')"
+  case "$file_width" in
+  720)
+    format_number="1"
+  ;;
+  1280)
+    format_number="2"
+  ;;  
+  1920)
+    format_number="3"
+  ;;	
+  esac
 fi
 }
 
@@ -105,11 +115,13 @@ input_file="$1"
 format_number="$2"
 basename=$(basename "$1")
 filename=${basename%.*}
-get_lang "$1" "English"
 
+get_lang "$input_file" "English"
+
+format_output "$input_file"
 
 format_number=$(echo "$format_number" | tr -d ' ')
-case "$i" in
+case "$format_number" in
 0)
 	transcode_settings="$transcode_zer"
 ;;
@@ -119,18 +131,30 @@ case "$i" in
 2)
 	transcode_settings="$transcode_two"
 ;;
-	3)
+3)
 	transcode_settings="$transcode_thr"
 ;;
 esac
 
+
 if [[ "$format_number" != "" ]]; then
-output_format="$temp_loc/$filename""_$format_number.mkv"	
-handbrake_command="$HandBrakeCLI -i \"$1\" -o \"$output_format\" $transcode_settings -a $audio_track"
-echo $handbrake_command >&2
-# eval $handbrake_command 
+  rm "$temp_loc/$filename""_$format_number.mkv" >/dev/null 2>&1
+  output_format="$temp_loc/$filename""_$format_number.mkv"	
+  handbrake_command="$HandBrakeCLI -i \"$1\" -o \"$output_format\" $transcode_settings -a $audio_track"
+  echo "Evaluating:\n\n$handbrake_command\n" >&2
+  eval $handbrake_command >/dev/null 2>&1
+  if [[ "$format_number" == "0" ]]; then
+    filebot_command="filebot $filebot_base_tv \"$output_loc/TV/$filebot_format_tv_transcode\"" 
+  else
+    filebot_command="filebot $filebot_base_movie \"$output_loc/Movies/$filebot_format_movie_transcode\""
+  fi
+  eval "$filebot_command \"$output_format\""
+  cdir="$(pwd -P)"
+  cd "$(dirname "$input_file")"
+  mkdir ../transcoding >/dev/null 2>&1
+  mv "$input_file" ../transcoding/
+  cd "$cdir"
 fi
-# rm "$1"
 }
 
 
@@ -140,4 +164,13 @@ fi
 
 check_os
 
-transcode_with_handbrake_and_filebot "$name_of_file" "$format_number"
+oldIFS=$IFS
+IFS=$'\n'
+for i in $(ls "$folder"/*)
+do
+  echo "\nFile being processed: $(basename "$i")\n" >&2
+  transcode_with_handbrake_and_filebot "$i" "$format_number"
+done
+IFS=oldIFS
+
+echo "\n\nAll files have been successfully processed!!\n" >&2
